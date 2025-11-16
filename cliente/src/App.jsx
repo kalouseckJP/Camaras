@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext'; // Importar el hook
 
-function App() {
-  const [count, setCount] = useState(0)
+// Layouts y Páginas
+import AuthLayout from './layouts/AuthLayout';
+import LoginPage from './pages/LoginPage';
+import DashboardLayout from './layouts/DashboardLayout'; // <-- Asumiendo que tienes este
+import LiveViewPage from './pages/LiveViewPage'; // <-- Asumiendo que tienes este
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+// Importar el guardia
+import ProtectedRoute from './router/ProtectedRoute';
+
+// Componente especial para la ruta raíz "/"
+function RootRedirect() {
+  const { isAuthenticated } = useAuth();
+  
+  // Si estoy logueado, ir a "/live". Si no, a "/login".
+  return <Navigate to={isAuthenticated ? "/live" : "/login"} replace />;
 }
 
-export default App
+function App() {
+  return (
+    <Routes>
+      {/* 1. Redirección de la ruta raíz */}
+      <Route path="/" element={<RootRedirect />} />
+
+      {/* 2. Rutas Públicas (Login) */}
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+      </Route>
+
+      {/* 3. Rutas Protegidas (Dashboard) */}
+      <Route element={<ProtectedRoute />}> {/* <-- El Guardia */}
+        <Route element={<DashboardLayout />}> {/* <-- Layout del Dashboard */}
+          
+          <Route path="/live" element={<LiveViewPage />} />
+          {/* <Route path="/recordings" element={<RecordingsPage />} /> */}
+          {/* <Route path="/admin" element={<AdminPage />} /> */}
+        
+        </Route>
+      </Route>
+
+      {/* 4. Ruta para "No Encontrado" */}
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
+
+    </Routes>
+  );
+}
+
+export default App;
