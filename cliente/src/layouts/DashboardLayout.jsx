@@ -1,19 +1,33 @@
 // src/layouts/DashboardLayout.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom'; // Outlet es donde se renderizarán las páginas
 import Sidebar from './Sidebar';
 import Header from './Header';
 
 function DashboardLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => setSidebarOpen((s) => !s);
+
   return (
     <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
       
-      {/* 1. Sidebar Fijo */}
-      <Sidebar />
+      {/* 1. Sidebar Fijo / Collapsible */}
+      <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
 
       {/* 2. Área Principal (Header + Contenido) */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden relative">
         
+        {/* Toggle button visible sobre el header (móvil/desktop) */}
+        <button
+          aria-label="Toggle sidebar"
+          onClick={toggleSidebar}
+          className="absolute top-4 left-4 z-30 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none"
+        >
+          {/* simple icon */}
+          <span className="text-xl">☰</span>
+        </button>
+
         {/* 2.1. Header */}
         <Header />
 

@@ -5,7 +5,7 @@ import CameraView from '../features/CameraView';
 import USBCameraView from '../features/USBCameraView';
 
 // URL de HLS de prueba
-const TEST_STREAM_URL = '10.0.21.51:8080';
+const TEST_STREAM_URL = 'http://192.168.1.23:8080';
 const MJPEG_CAM_URL = 'http://10.0.21.65:8081/video.mjpg';
 
 function LiveViewPage() {
@@ -50,7 +50,17 @@ function LiveViewPage() {
           <div className="p-3">
             <h3 className="text-white font-semibold">Cámara 3: Patio</h3>
           </div>
-          <CameraView streamUrl={TEST_STREAM_URL} />
+          
+          <div className="aspect-video w-full h-full bg-black">
+
+            <img
+              src={TEST_STREAM_URL}
+              className="w-full h-full object-cover"
+              alt="Linux Camera"
+            />
+          </div>
+          
+          {/* <CameraView streamUrl={TEST_STREAM_URL} /> */}
         </div>
 
       </div>

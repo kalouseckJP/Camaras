@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-function Sidebar() {
+function Sidebar({ isOpen = true, onToggle }) {
 
   // Clases base para los enlaces
   const baseLinkClasses = "flex items-center p-3 rounded-lg transition-colors duration-200";
@@ -13,9 +13,9 @@ function Sidebar() {
       : `${baseLinkClasses} text-gray-300 hover:bg-gray-700`; // Estilo inactivo
 
   return (
-    <aside className="w-64 bg-gray-800 p-4 flex flex-col h-full">
+    <aside className={`flex flex-col h-full bg-gray-800 transition-width duration-300 ${isOpen ? 'w-64' : 'w-16'} p-2`}>
       {/* Logo o Título */}
-      <div className="text-white text-2xl font-bold mb-8 p-3">
+      <div className={`text-white text-2xl font-bold mb-6 p-3 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         App Cámaras
       </div>
 
@@ -24,57 +24,71 @@ function Sidebar() {
         <ul className="space-y-2">
           <li>
             <NavLink to="/live" className={getNavLinkClasses}>
-              {/* Puedes añadir íconos aquí */}
-              <span>Vista en Vivo</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Vista en Vivo</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/agregar" className={getNavLinkClasses}>
-              <span>Agregar Cámara</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Agregar Cámara</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/ordenar" className={getNavLinkClasses}>
-              <span>Ordenar Cámaras</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Ordenar Cámaras</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/administrar" className={getNavLinkClasses}>
-              <span>Administrar permisos</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Administrar permisos</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/logs" className={getNavLinkClasses}>
-              <span>Logs</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Logs</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/grabaciones" className={getNavLinkClasses}>
-              <span>Programar grabaciones</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Programar grabaciones</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/editar" className={getNavLinkClasses}>
-              <span>Editar cámaras</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Editar cámaras</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/notificaciones" className={getNavLinkClasses}>
-              <span>Notificaciones</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Notificaciones</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
             <NavLink to="/almacenamiento" className={getNavLinkClasses}>
-              <span>Almacenamiento</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/grabaciones" className={getNavLinkClasses}>
-              <span>Grabaciones</span>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Almacenamiento</span>
+              {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
         </ul>
       </nav>
+
+      {/* Toggle interno opcional */}
+      <div className="p-2">
+        <button
+          onClick={onToggle}
+          className="w-full flex items-center justify-center p-2 rounded-md bg-gray-700 hover:bg-gray-600 text-sm"
+          aria-label="Toggle sidebar"
+        >
+          {isOpen ? 'Cerrar' : 'Abrir'}
+        </button>
+      </div>
     </aside>
   );
 }
