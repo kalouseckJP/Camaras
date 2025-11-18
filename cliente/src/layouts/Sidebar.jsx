@@ -29,13 +29,48 @@ function Sidebar() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/recordings" className={getNavLinkClasses}>
-              <span>Grabaciones</span>
+            <NavLink to="/agregar" className={getNavLinkClasses}>
+              <span>Agregar Cámara</span>
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin" className={getNavLinkClasses}>
-              <span>Administración</span>
+            <NavLink to="/ordenar" className={getNavLinkClasses}>
+              <span>Ordenar Cámaras</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/administrar" className={getNavLinkClasses}>
+              <span>Administrar permisos</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/logs" className={getNavLinkClasses}>
+              <span>logs</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/grabaciones" className={getNavLinkClasses}>
+              <span>Programar grabaciones</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/editar" className={getNavLinkClasses}>
+              <span>Editar cámaras</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/notificaciones" className={getNavLinkClasses}>
+              <span>Notificaciones</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/almacenamiento" className={getNavLinkClasses}>
+              <span>Almacenamiento</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/grabaciones" className={getNavLinkClasses}>
+              <span>Grabaciones</span>
             </NavLink>
           </li>
         </ul>

@@ -6,8 +6,9 @@ import { useAuth } from './contexts/AuthContext'; // Importar el hook
 // Layouts y Páginas
 import AuthLayout from './layouts/AuthLayout';
 import LoginPage from './pages/LoginPage';
-import DashboardLayout from './layouts/DashboardLayout'; // <-- Asumiendo que tienes este
-import LiveViewPage from './pages/LiveViewPage'; // <-- Asumiendo que tienes este
+import DashboardLayout from './layouts/DashboardLayout';
+import LiveViewPage from './pages/LiveViewPage';
+import AddCameraPage from './pages/AddCameraPage';
 
 // Importar el guardia
 import ProtectedRoute from './router/ProtectedRoute';
@@ -36,6 +37,7 @@ function App() {
         <Route element={<DashboardLayout />}> {/* <-- Layout del Dashboard */}
           
           <Route path="/live" element={<LiveViewPage />} />
+          <Route path="/agregar" element={<AddCameraPage />} />
           {/* <Route path="/recordings" element={<RecordingsPage />} /> */}
           {/* <Route path="/admin" element={<AdminPage />} /> */}
         
