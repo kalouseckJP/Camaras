@@ -45,7 +45,7 @@ function Sidebar() {
           </li>
           <li>
             <NavLink to="/logs" className={getNavLinkClasses}>
-              <span>logs</span>
+              <span>Logs</span>
             </NavLink>
           </li>
           <li>
