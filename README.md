@@ -3,7 +3,7 @@ La intención es lograr crear una aplicación de navegador en la que se pueda vi
 # Iniciar
 El proyecto se divide en dos partes: **Servidor** (Backend) y **Cliente** (Frontend). Necesitarás ejecutar ambos para que el sistema funcione correctamente.
 
-### 2. Iniciar el cliente (Frontend)
+### 1. Iniciar el cliente (Frontend)
 Una vez descargado los archivos, se abre una terminal de comandos en la carpeta descargada y se ingresan los siguientes comandos:
 ```
 cd cliente
