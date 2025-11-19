@@ -76,6 +76,12 @@ function Sidebar({ isOpen = true, onToggle }) {
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/grabaciones" className={getNavLinkClasses}>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Grabaciones</span>
+              {!isOpen && <span className="mx-auto">●</span>}
+            </NavLink>
+          </li>
         </ul>
       </nav>
 

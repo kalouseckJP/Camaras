@@ -10,7 +10,7 @@ function CameraForm() {
     setConnectionStatus('testing');
     setTimeout(() => {
       // Simular éxito (en un caso real, esto vendría de una API)
-      if (ipAddress.length > 5) {
+      if (ipAddress.length > 8) {
         setConnectionStatus('success');
       } else {
         setConnectionStatus('error');
@@ -24,8 +24,33 @@ function CameraForm() {
       alert('Por favor, prueba la conexión antes de guardar.');
       return;
     }
-    // Lógica para guardar la cámara (llamar a una API)
-    alert(`Cámara "${cameraName}" con IP ${ipAddress} guardada.`);
+
+    // Crear objeto cámara
+    const newCamera = {
+      id: Date.now(),
+      name: cameraName || `Camara ${ipAddress}`,
+      ip: ipAddress.trim(),
+    };
+
+    // Leer cámaras existentes desde localStorage
+    let cameras = [];
+    try {
+      const raw = localStorage.getItem('cameras');
+      cameras = raw ? JSON.parse(raw) : [];
+    } catch (err) {
+      console.error('Error parseando cameras desde localStorage', err);
+      cameras = [];
+    }
+
+    // Añadir y guardar
+    cameras.push(newCamera);
+    localStorage.setItem('cameras', JSON.stringify(cameras));
+
+    // Notificar a otras pestañas/componentes que la lista cambió
+    window.dispatchEvent(new Event('camerasUpdated'));
+
+    alert(`Cámara "${newCamera.name}" con IP ${newCamera.ip} guardada.`);
+
     // Limpiar formulario
     setIpAddress('');
     setCameraName('');
