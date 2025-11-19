@@ -16,6 +16,8 @@ npm dev run
 ```  
 Esto iniciara la aplicación web de forma local y a su vez haciendo posible su acceso dentro de la misma red.
 
+---
+
 ### 2. Iniciar el Servidor (Backend)
 Abre una terminal, navega a la carpeta del servidor e instala las dependencias.  
 ```
