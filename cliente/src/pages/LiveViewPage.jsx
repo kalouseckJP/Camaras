@@ -1,191 +1,241 @@
-import React, { useEffect, useState, useRef } from 'react';
-// Importamos el componente de stream HLS
+import React, { useState, useEffect, useRef } from 'react';
+import api from '../api/axios';
 import CameraView from '../features/CameraView';
-// ¡Importamos nuestro nuevo componente de cámara USB!
 import USBCameraView from '../features/USBCameraView';
-
-// URL de HLS de prueba
-const TEST_STREAM_URL = 'http://192.168.1.23:8080';
-const MJPEG_CAM_URL = 'http://10.0.21.65:8081/video.mjpg';
-
-// Cámaras por defecto (ahora forman parte de la lista que se puede seleccionar/reordenar)
-const DEFAULT_CAMERAS = [
-  { id: 'usb-default', type: 'usb', name: 'Cámara USB (Mi PC)', isDefault: true },
-  { id: 'mjpeg-default', type: 'mjpeg', name: 'Cámara Taller (Yawcam)', ip: MJPEG_CAM_URL, isDefault: true },
-  { id: 'patio-default', type: 'stream', name: 'Cámara 3: Patio', ip: TEST_STREAM_URL, isDefault: true },
-];
 
 function LiveViewPage() {
   const [cameras, setCameras] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [gridCols, setGridCols] = useState(2); // Layout por defecto: 2 columnas
   const [selectedId, setSelectedId] = useState(null);
+  
   const dragIndexRef = useRef(null);
 
-  const saveCameras = (list) => {
-    try {
-      localStorage.setItem('cameras', JSON.stringify(list));
-      // notificar otras partes de la app
-      window.dispatchEvent(new Event('camerasUpdated'));
-    } catch (err) {
-      console.error('Error guardando cámaras en localStorage', err);
-    }
-  };
-
-  const loadCameras = () => {
-    try {
-      const raw = localStorage.getItem('cameras');
-      const parsed = raw ? JSON.parse(raw) : null;
-
-      // Compatibilidad:
-      // - Si no hay nada guardado -> usar DEFAULT_CAMERAS
-      // - Si hay guardado pero no contiene las cámaras por defecto (legacy), las añadimos al inicio
-      // - Si ya hay una lista guardada que incluye defaults, la usamos tal cual
-      if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
-        setCameras(DEFAULT_CAMERAS);
-      } else {
-        const defaultIds = DEFAULT_CAMERAS.map(d => d.id);
-        const hasDefault = parsed.some(p => defaultIds.includes(p.id));
-        if (!hasDefault) {
-          setCameras([...DEFAULT_CAMERAS, ...parsed]);
-        } else {
-          setCameras(parsed);
-        }
-      }
-    } catch (err) {
-      console.error('Error cargando cámaras desde localStorage', err);
-      setCameras(DEFAULT_CAMERAS);
-    }
-  };
-
+  // --- 1. CARGA DE DATOS (Base de Datos + LocalStorage + USB) ---
   useEffect(() => {
-    loadCameras();
-    const handler = () => loadCameras();
-    window.addEventListener('camerasUpdated', handler);
-    // también escuchar cambios de storage (otras pestañas)
-    const storageHandler = (e) => {
-      if (e.key === 'cameras') loadCameras();
-    };
-    window.addEventListener('storage', storageHandler);
+    const fetchData = async () => {
+      try {
+        // A. Traer cámaras de la BD
+        const token = localStorage.getItem('token');
+        const response = await api.get('/cameras', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const dbCameras = response.data;
 
-    return () => {
-      window.removeEventListener('camerasUpdated', handler);
-      window.removeEventListener('storage', storageHandler);
+        // B. Crear objeto de Cámara USB (manual)
+        const usbCamera = { 
+          camera_id: 'local-usb', // ID especial texto para diferenciarla
+          name: 'Cámara USB (Local)', 
+          type: 'usb',
+          current_status: 'online'
+        };
+
+        // C. Unir todo en una lista bruta
+        // Ponemos la USB al principio o al final, como prefieras
+        let fullList = [usbCamera, ...dbCameras];
+
+        // D. Aplicar orden guardado en LocalStorage
+        const savedOrder = localStorage.getItem('cameraOrder');
+        if (savedOrder) {
+          const orderIds = JSON.parse(savedOrder);
+          
+          // Ordenamos 'fullList' basándonos en el índice de sus IDs en 'orderIds'
+          fullList.sort((a, b) => {
+            const indexA = orderIds.indexOf(String(a.camera_id));
+            const indexB = orderIds.indexOf(String(b.camera_id));
+            
+            // Si el ID no está en la lista guardada (es nuevo), va al final
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+          });
+        }
+
+        setCameras(fullList);
+      } catch (error) {
+        console.error('Error cargando cámaras:', error);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchData();
   }, []);
 
-  // Reordenar por índices
+  // --- 2. LÓGICA DE REORDENAMIENTO Y GUARDADO ---
+  const saveOrder = (newList) => {
+    // Guardamos solo los IDs en orden
+    const orderIds = newList.map(c => String(c.camera_id));
+    localStorage.setItem('cameraOrder', JSON.stringify(orderIds));
+  };
+
   const reorder = (fromIndex, toIndex) => {
     if (fromIndex === null || toIndex === null || fromIndex === toIndex) return;
+    
     const copy = [...cameras];
-    const [moved] = copy.splice(fromIndex, 1);
-    copy.splice(toIndex, 0, moved);
+    const [movedItem] = copy.splice(fromIndex, 1);
+    copy.splice(toIndex, 0, movedItem);
+    
     setCameras(copy);
-    saveCameras(copy);
+    saveOrder(copy); // Guardamos el nuevo orden
   };
 
-  // mover seleccionado arriba/abajo (útil en teclado o botones)
-  const moveSelected = (direction) => {
-    if (selectedId == null) return;
-    const index = cameras.findIndex((c) => c.id === selectedId);
-    if (index === -1) return;
-    const target = direction === 'up' ? index - 1 : index + 1;
-    if (target < 0 || target >= cameras.length) return;
-    reorder(index, target);
+  // --- 3. LÓGICA VISUAL (LAYOUT Y FULLSCREEN) ---
+  const getGridClass = () => {
+    switch (gridCols) {
+      case 1: return 'grid-cols-1';
+      case 2: return 'grid-cols-1 md:grid-cols-2'; // Móvil 1, PC 2
+      case 3: return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'; // Móvil 1, Tablet 2, PC 3
+      case 4: return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+      default: return 'grid-cols-1 md:grid-cols-2';
+    }
   };
 
+  const toggleFullScreen = (elementId) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      if (!document.fullscreenElement) {
+        element.requestFullscreen().catch(err => console.log(err));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  // --- RENDER ---
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6 text-white">
-        Vista en Vivo
-      </h1>
-
-      <p className="text-sm text-gray-300 mb-4">
-        Selecciona una cámara (clic) y arrástrala para reordenar. También puedes usar los botones Arriba/Abajo en la tarjeta seleccionada.
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-        {/* Renderizamos todas las cámaras (incluidas las por defecto) desde el estado */}
-        {cameras.map((cam, idx) => {
-          const isSelected = selectedId === cam.id;
-          return (
-            <div
-              key={cam.id ?? `cam-${idx}`}
-              className={`bg-gray-800 rounded-lg shadow-lg border overflow-hidden ${isSelected ? 'border-yellow-400 ring-2 ring-yellow-300' : 'border-gray-700'}`}
-              draggable
-              onDragStart={(e) => {
-                dragIndexRef.current = idx;
-                // transferir índice como string
-                e.dataTransfer.setData('text/plain', String(idx));
-                e.dataTransfer.effectAllowed = 'move';
-              }}
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                const from = Number(e.dataTransfer.getData('text/plain'));
-                const to = idx;
-                reorder(from, to);
-                dragIndexRef.current = null;
-              }}
-              onClick={() => {
-                setSelectedId(cam.id ?? null);
-              }}
+    <div className="flex flex-col h-full">
+      
+      {/* BARRA SUPERIOR: Título y Botones de Layout */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-gray-800 p-3 rounded-lg shadow">
+        <div>
+          <h1 className="text-xl font-bold text-white">Centro de Monitoreo</h1>
+          <p className="text-xs text-gray-400">Arrastra las cámaras para organizar</p>
+        </div>
+        
+        <div className="flex items-center space-x-2 mt-2 md:mt-0">
+          <span className="text-gray-400 text-sm mr-2">Vistas:</span>
+          {[1, 2, 3].map(num => (
+            <button 
+              key={num}
+              onClick={() => setGridCols(num)}
+              className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
+                gridCols === num ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
             >
-              <div className="p-3 flex items-center justify-between">
-                <h3 className="text-white font-semibold">{cam.name || cam.ip}</h3>
-                {/* Controles simples visibles sólo si está seleccionada */}
-                {isSelected && (
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        moveSelected('up');
-                      }}
-                      className="px-2 py-1 bg-gray-700 text-white rounded hover:bg-gray-600"
-                    >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        moveSelected('down');
-                      }}
-                      className="px-2 py-1 bg-gray-700 text-white rounded hover:bg-gray-600"
-                    >
-                      ↓
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Render según tipo */}
-              {cam.type === 'usb' ? (
-                <div className="bg-black">
-                  <USBCameraView />
-                </div>
-              ) : cam.type === 'mjpeg' || (typeof cam.ip === 'string' && (cam.ip.includes('.mjpg') || cam.ip.toLowerCase().includes('mjpeg'))) ? (
-                <div className="aspect-video w-full h-full bg-black">
-                  <img
-                    src={cam.ip || MJPEG_CAM_URL}
-                    alt={cam.name || 'Cámara MJPEG'}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      console.error('Error al cargar stream MJPEG:', e);
-                    }}
-                  />
-                </div>
-              ) : (
-                <CameraView streamUrl={cam.ip || TEST_STREAM_URL} />
-              )}
-            </div>
-          );
-        })}
-
+              {num}x{num}
+            </button>
+          ))}
+        </div>
       </div>
+
+      {/* ÁREA DE CÁMARAS */}
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center text-white">Cargando sistema...</div>
+      ) : (
+        <div className={`grid ${getGridClass()} gap-4 auto-rows-fr pb-10`}>
+          
+          {cameras.map((cam, idx) => {
+            const isSelected = selectedId === cam.camera_id;
+            const containerId = `cam-container-${cam.camera_id}`;
+            
+            // Detectar tipo de stream
+            const isUsb = cam.type === 'usb' || cam.camera_id === 'local-usb';
+            // Lógica simple: si tiene m3u8 es HLS, si no, asumimos MJPEG (imagen)
+            const isHls = cam.stream_url_main && cam.stream_url_main.includes('.m3u8');
+
+            return (
+              <div
+                key={cam.camera_id}
+                id={containerId}
+                className={`
+                  relative group flex flex-col
+                  bg-black rounded-lg shadow-lg overflow-hidden 
+                  border transition-all duration-200
+                  ${isSelected ? 'border-yellow-400 ring-2 ring-yellow-300' : 'border-gray-700'}
+                `}
+                // Lógica Drag & Drop
+                draggable
+                onDragStart={(e) => {
+                  dragIndexRef.current = idx;
+                  e.dataTransfer.setData('text/plain', String(idx));
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault(); // Necesario para permitir soltar
+                  e.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const from = Number(e.dataTransfer.getData('text/plain'));
+                  reorder(from, idx);
+                  dragIndexRef.current = null;
+                }}
+                onClick={() => setSelectedId(cam.camera_id)}
+              >
+                {/* Cabecera de la tarjeta (Nombre y estado) */}
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-2 z-10 flex justify-between items-start pointer-events-none">
+                  <div className="pointer-events-auto"> {/* Para permitir seleccionar texto si se quiere */}
+                    <h3 className="text-white font-bold text-sm drop-shadow-md">
+                      {cam.name}
+                    </h3>
+                    <span className={`text-xs ${cam.current_status === 'online' ? 'text-green-400' : 'text-red-400'}`}>
+                      {cam.current_status === 'online' ? '● En vivo' : '● Desconectado'}
+                    </span>
+                  </div>
+                  
+                  {/* Botón Fullscreen */}
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFullScreen(containerId);
+                    }}
+                    className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 hover:bg-indigo-600 text-white p-1.5 rounded"
+                    title="Pantalla Completa"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Contenido del Video */}
+                <div className="flex-1 relative min-h-[200px] bg-gray-900 flex items-center justify-center">
+                  
+                  {isUsb ? (
+                    <USBCameraView />
+                  ) : isHls ? (
+                    <CameraView streamUrl={cam.stream_url_main} />
+                  ) : (
+                    /* MJPEG / Imagen Estática */
+                    <img 
+                      src={cam.stream_url_main} 
+                      alt={cam.name}
+                      className="w-full h-full object-contain absolute inset-0"
+                      onError={(e) => {
+                        e.target.style.display = 'none'; // Ocultar si falla
+                      }}
+                    />
+                  )}
+                  
+                  {/* Placeholder si falla la imagen o video */}
+                  <div className="absolute inset-0 flex items-center justify-center -z-10">
+                    <span className="text-gray-600 text-sm">Cargando señal...</span>
+                  </div>
+                </div>
+
+              </div>
+            );
+          })}
+
+          {/* Mensaje si no hay cámaras */}
+          {cameras.length === 0 && (
+            <div className="col-span-full h-64 flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg text-gray-500">
+              <p>No hay cámaras configuradas.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

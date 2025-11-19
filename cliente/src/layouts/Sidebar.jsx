@@ -29,8 +29,8 @@ function Sidebar({ isOpen = true, onToggle }) {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/agregar" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Agregar Cámara</span>
+            <NavLink to="/cameras" className={getNavLinkClasses}>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Gestión de Cámaras</span>
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>

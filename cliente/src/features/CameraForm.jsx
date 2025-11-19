@@ -1,125 +1,95 @@
 import React, { useState } from 'react';
+import api from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 function CameraForm() {
-  const [ipAddress, setIpAddress] = useState('');
   const [cameraName, setCameraName] = useState('');
-  const [connectionStatus, setConnectionStatus] = useState(null); // null, 'testing', 'success', 'error'
+  const [streamUrl, setStreamUrl] = useState('');
+  const [ipAddress, setIpAddress] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleTestConnection = () => {
-    // Simular una prueba de conexión
-    setConnectionStatus('testing');
-    setTimeout(() => {
-      // Simular éxito (en un caso real, esto vendría de una API)
-      if (ipAddress.length > 8) {
-        setConnectionStatus('success');
-      } else {
-        setConnectionStatus('error');
-      }
-    }, 1500);
-  };
-
-  const handleSubmit = (e) => {
+  // Función para guardar en la base de datos
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (connectionStatus !== 'success') {
-      alert('Por favor, prueba la conexión antes de guardar.');
-      return;
-    }
+    setLoading(true);
 
-    // Crear objeto cámara
-    const newCamera = {
-      id: Date.now(),
-      name: cameraName || `Camara ${ipAddress}`,
-      ip: ipAddress.trim(),
-    };
-
-    // Leer cámaras existentes desde localStorage
-    let cameras = [];
     try {
-      const raw = localStorage.getItem('cameras');
-      cameras = raw ? JSON.parse(raw) : [];
-    } catch (err) {
-      console.error('Error parseando cameras desde localStorage', err);
-      cameras = [];
+      // 1. Obtenemos el token del localStorage (para el middleware)
+      const token = localStorage.getItem('token');
+
+      // 2. Hacemos la petición POST
+      await api.post('/cameras', {
+        name: cameraName,
+        ip: ipAddress,
+        streamUrl: streamUrl
+      }, {
+        headers: { Authorization: `Bearer ${token}` } // Enviamos el token
+      });
+
+      alert('Cámara guardada exitosamente');
+      // Redirigimos a la vista en vivo o lista de cámaras
+      navigate('/live'); 
+
+    } catch (error) {
+      console.error('Error al guardar:', error);
+      alert('Error al guardar la cámara');
+    } finally {
+      setLoading(false);
     }
-
-    // Añadir y guardar
-    cameras.push(newCamera);
-    localStorage.setItem('cameras', JSON.stringify(cameras));
-
-    // Notificar a otras pestañas/componentes que la lista cambió
-    window.dispatchEvent(new Event('camerasUpdated'));
-
-    alert(`Cámara "${newCamera.name}" con IP ${newCamera.ip} guardada.`);
-
-    // Limpiar formulario
-    setIpAddress('');
-    setCameraName('');
-    setConnectionStatus(null);
   };
 
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      className="max-w-xl mx-auto bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700"
-    >
-      {/* Nombre de la Cámara */}
+    <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 max-w-2xl mx-auto">
+      <h2 className="text-white text-2xl mb-6 font-semibold">Registrar Nueva Cámara</h2>
+
+      {/* Nombre */}
       <div className="mb-4">
-        <label htmlFor="cameraName" className="block text-gray-300 text-sm font-bold mb-2">
-          Nombre de la Cámara
-        </label>
+        <label className="block text-gray-300 text-sm font-bold mb-2">Nombre Referencial</label>
         <input
-          type="text" id="cameraName"
-          className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 ... bg-gray-700"
+          type="text"
+          className="w-full bg-gray-700 text-white border border-gray-600 rounded py-2 px-3 focus:outline-none focus:border-indigo-500"
+          placeholder="Ej: Cámara Entrada"
           value={cameraName}
           onChange={(e) => setCameraName(e.target.value)}
           required
         />
       </div>
 
-      {/* IP de la Cámara */}
-      <div className="mb-6">
-        <label htmlFor="ipAddress" className="block text-gray-300 text-sm font-bold mb-2">
-          Dirección IP (o URL del stream)
-        </label>
-        <div className="flex space-x-2">
-          <input
-            type="text" id="ipAddress"
-            className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 ... bg-gray-700"
-            value={ipAddress}
-            onChange={(e) => setIpAddress(e.target.value)}
-            required
-          />
-          <button
-            type="button"
-            onClick={handleTestConnection}
-            disabled={connectionStatus === 'testing'}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors disabled:opacity-50"
-          >
-            {connectionStatus === 'testing' ? 'Probando...' : 'Probar'}
-          </button>
-        </div>
+      {/* IP */}
+      <div className="mb-4">
+        <label className="block text-gray-300 text-sm font-bold mb-2">Dirección IP (Opcional)</label>
+        <input
+          type="text"
+          className="w-full bg-gray-700 text-white border border-gray-600 rounded py-2 px-3 focus:outline-none focus:border-indigo-500"
+          placeholder="Ej: 192.168.1.50"
+          value={ipAddress}
+          onChange={(e) => setIpAddress(e.target.value)}
+        />
       </div>
 
-      {/* Indicador de Estado de Conexión (Previsualizar) */}
-      {connectionStatus === 'success' && (
-        <div className="mb-4 p-3 bg-green-800 text-green-200 border border-green-600 rounded">
-          ¡Conexión exitosa! Ya puedes guardar.
-        </div>
-      )}
-      {connectionStatus === 'error' && (
-        <div className="mb-4 p-3 bg-red-800 text-red-200 border border-red-600 rounded">
-          No se pudo conectar. Verifica la IP.
-        </div>
-      )}
+      {/* Stream URL */}
+      <div className="mb-6">
+        <label className="block text-gray-300 text-sm font-bold mb-2">URL del Stream (MJPEG/HLS/RTSP)</label>
+        <input
+          type="text"
+          className="w-full bg-gray-700 text-white border border-gray-600 rounded py-2 px-3 focus:outline-none focus:border-indigo-500"
+          placeholder="Ej: http://192.168.1.50:8081/stream"
+          value={streamUrl}
+          onChange={(e) => setStreamUrl(e.target.value)}
+          required
+        />
+        <p className="text-xs text-gray-500 mt-1">Esta es la URL que usará el sistema para visualizar el video.</p>
+      </div>
 
       {/* Botón Guardar */}
-      <div className="flex items-center justify-end">
+      <div className="flex justify-end">
         <button
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded ..."
           type="submit"
-          disabled={connectionStatus !== 'success'} // Solo se puede guardar si la conexión fue exitosa
+          disabled={loading}
+          className={`bg-indigo-600 text-white font-bold py-2 px-6 rounded hover:bg-indigo-700 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          Guardar Cámara
+          {loading ? 'Guardando...' : 'Guardar Cámara'}
         </button>
       </div>
     </form>

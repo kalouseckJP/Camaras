@@ -1,32 +1,45 @@
-// src/pages/LoginPage.jsx
-import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext'; // <-- Importar el hook
+import React, { useState, useEffect } from 'react'; // <--- 1. Importar useEffect
+import { useNavigate } from 'react-router-dom';      // <--- 2. Importar useNavigate
+import { useAuth } from '../contexts/AuthContext'; 
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
-  const { login } = useAuth(); // <-- Obtener la función login
+  const { login, isAuthenticated } = useAuth(); // <--- 3. Traer isAuthenticated
+  const navigate = useNavigate();               // <--- 4. Instanciar navigate
+
+  // ---------------------------------------------------------
+  // LÓGICA DE REDIRECCIÓN
+  // ---------------------------------------------------------
+  useEffect(() => {
+    // Si el usuario YA está autenticado...
+    if (isAuthenticated) {
+      // ...lo mandamos directo al dashboard
+      navigate('/live', { replace: true }); 
+      // 'replace: true' evita que pueda volver atrás al login con la flecha del navegador
+    }
+  }, [isAuthenticated, navigate]);
+  // ---------------------------------------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    try {
-      // Simulación de login (admin/123)
-      const success = await login(username, password); 
-      if (!success) {
-        setError('Nombre de usuario o contraseña incorrectos');
-      }
-      // Si el login es exitoso, el AuthProvider nos redirigirá automáticamente
-    } catch (err) {
-      setError('Ocurrió un error. Intente de nuevo.');
+    
+    // Nota: No necesitamos navegar aquí manualmente si el login es exitoso,
+    // porque AuthContext ya hace el navigate, o este useEffect se activará
+    // cuando isAuthenticated cambie a true.
+    const success = await login(username, password);
+    
+    if (!success) {
+      setError('Nombre de usuario o contraseña incorrectos');
     }
   };
 
+  if (isAuthenticated) return null;
+
   return (
-    // Asegúrate de que tu <div> principal sea un <form>
     <form 
       // Aquí estaban los "..."
       className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-sm border border-gray-700" 
