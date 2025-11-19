@@ -6,9 +6,15 @@ const cameraRoutes = require('./routes/cameraRoutes'); // Importar rutas
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://192.168.1.11:5173',
+  'http://0.0.0.0:5173'
+]
+
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:5173', // Permitir solo a tu frontend
+  origin: allowedOrigins, // Permitir solo a tu frontend
   credentials: true // Permitir cookies/headers
 })); // Permite que React se conecte
 app.use(express.json()); // <--- CRUCIAL: Permite leer JSON del Body
