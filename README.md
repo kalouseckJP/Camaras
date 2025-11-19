@@ -8,5 +8,5 @@ npm install
 ```
 Esto permitirá la descarga de todos los paquetes necesarios para el funcionamiento.  
 Luego:  
-`npm dev run`  
+```npm dev run```  
 Esto iniciara la aplicación web de forma local y a su vez haciendo posible su acceso dentro de la misma red.
