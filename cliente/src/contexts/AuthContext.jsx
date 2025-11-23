@@ -59,7 +59,8 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const value = { user, isAuthenticated: !!user, login, logout };
+  const isAdmin = user?.role_id === 1;
+  const value = { user, isAuthenticated: !!user, isAdmin, login, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

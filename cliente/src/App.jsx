@@ -11,6 +11,10 @@ import LiveViewPage from './pages/LiveViewPage';
 import AddCameraPage from './pages/AddCameraPage';
 import CamerasPage from './pages/CamerasPage';
 import EditCameraPage from './pages/EditCameraPage';
+import UsersPage from './pages/UsersPage';
+import AddUserPage from './pages/AddUserPage';
+import EditUserPage from './pages/EditUserPage';
+
 
 // Importar el guardia
 import ProtectedRoute from './router/ProtectedRoute';
@@ -42,6 +46,9 @@ function App() {
           <Route path="/agregar" element={<AddCameraPage />} />
           <Route path="/cameras" element={<CamerasPage />} />
           <Route path="/editar-camera/:id" element={<EditCameraPage />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/add-user" element={<AddUserPage />} />
+          <Route path="/edit-user/:id" element={<EditUserPage />} />
           {/* <Route path="/recordings" element={<RecordingsPage />} /> */}
           {/* <Route path="/admin" element={<AdminPage />} /> */}
         

@@ -1,8 +1,10 @@
 // src/layouts/Sidebar.jsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 function Sidebar({ isOpen = true, onToggle }) {
+  const { isAdmin } = useAuth();
 
   // Clases base para los enlaces
   const baseLinkClasses = "flex items-center p-3 rounded-lg transition-colors duration-200";
@@ -29,59 +31,69 @@ function Sidebar({ isOpen = true, onToggle }) {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/cameras" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Gestión de Cámaras</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
-          <li>
             <NavLink to="/ordenar" className={getNavLinkClasses}>
               <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Ordenar Cámaras</span>
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/administrar" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Administrar permisos</span>
+          {isAdmin && (
+            <>
+            <li>
+            <NavLink to="/cameras" className={getNavLinkClasses}>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Gestión de Cámaras</span>
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
-          </li>
-          <li>
-            <NavLink to="/logs" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Logs</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/grabaciones" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Programar grabaciones</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/editar" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Editar cámaras</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/notificaciones" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Notificaciones</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/almacenamiento" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Almacenamiento</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/grabaciones" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Grabaciones</span>
-              {!isOpen && <span className="mx-auto">●</span>}
-            </NavLink>
-          </li>
+            </li>
+            <li>
+              <NavLink to="/administrar" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Administrar permisos</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/logs" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Logs</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/grabaciones" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Programar grabaciones</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/editar" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Editar cámaras</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/notificaciones" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Notificaciones</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/almacenamiento" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Almacenamiento</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/grabaciones" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Grabaciones</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/users" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Gestión de Usuarios</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            </>
+          )}
         </ul>
       </nav>
 
