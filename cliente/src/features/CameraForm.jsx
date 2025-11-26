@@ -38,6 +38,8 @@ function CameraForm() {
       setLoading(false);
     }
   };
+  
+  const streamUrlSec = ''
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 max-w-2xl mx-auto">
@@ -77,6 +79,18 @@ function CameraForm() {
           placeholder="Ej: http://192.168.1.50:8081/stream"
           value={streamUrl}
           onChange={(e) => setStreamUrl(e.target.value)}
+          required
+        />
+        <p className="text-xs text-gray-500 mt-1">Esta es la URL que usará el sistema para visualizar el video.</p>
+      </div>
+
+      <div className="mb-6">
+        <label className="block dark:text-gray-300 text-sm font-bold mb-2">URL del Stream Secundario</label>
+        <input
+          type="text"
+          className="w-full bg-gray-100 dark:bg-gray-700 text-black dark:text-white border border-gray-600 rounded py-2 px-3 focus:outline-none focus:border-indigo-500"
+          placeholder="Ej: http://192.168.1.50:8081/substream"
+          value={streamUrlSec}
           required
         />
         <p className="text-xs text-gray-500 mt-1">Esta es la URL que usará el sistema para visualizar el video.</p>

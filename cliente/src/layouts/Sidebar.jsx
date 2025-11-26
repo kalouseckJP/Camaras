@@ -11,7 +11,7 @@ function Sidebar({ isOpen = true, onToggle }) {
   // Función para determinar las clases del NavLink (activo vs inactivo)
   const getNavLinkClasses = ({ isActive }) => 
     isActive
-      ? `${baseLinkClasses} bg-indigo-400 text-white hover:bg-indigo-500` // Estilo activo
+      ? `${baseLinkClasses} bg-indigo-400 dark:bg-indigo-600 text-white hover:bg-indigo-500` // Estilo activo
       : `${baseLinkClasses} hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-700`; // Estilo inactivo
 
   return (

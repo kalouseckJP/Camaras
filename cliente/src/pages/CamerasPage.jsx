@@ -63,7 +63,7 @@ function CamerasPage() {
       <div className="bg-gray-100 dark:bg-gray-800 shadow-md rounded-lg overflow-hidden border border-gray-700">
         <table className=" dark:bg-gray-900 min-w-full leading-normal dark:text-gray-300">
           <thead>
-            <tr className='bg-gray-200'>
+            <tr className='bg-gray-200 dark:bg-gray-900'>
               <th className="px-5 py-3 border-b-2  border-gray-700 text-left text-xs font-semibold uppercase tracking-wider">
                 ID
               </th>

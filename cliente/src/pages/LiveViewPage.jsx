@@ -102,12 +102,24 @@ function LiveViewPage() {
     }
   };
 
+
+  const toggleStream = (elementId) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      try {
+        
+      } catch (error) {
+        
+      }
+    }
+  };
+
   // --- RENDER ---
   return (
     <div className="flex flex-col h-full">
       
       {/* BARRA SUPERIOR: Título y Botones de Layout */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-gray-200 dark:bg-gray-800 p-3 rounded-lg shadow dark:bg-gray-800">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-gray-200 dark:bg-gray-800 p-3 rounded-lg shadow">
         <div>
           <h1 className="text-xl font-bold dark:text-white">Centro de Monitoreo</h1>
           <p className="text-xs text-gray-500 dark:text-gray-400">Arrastra las cámaras para organizar</p>
@@ -120,7 +132,7 @@ function LiveViewPage() {
               key={num}
               onClick={() => setGridCols(num)}
               className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
-                gridCols === num ? 'bg-indigo-400 text-white hover:bg-indigo-500' : 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                gridCols === num ? 'bg-indigo-400 dark:bg-indigo-600 text-white hover:bg-indigo-500 dark:hover:bg-indigo-700' : 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               {num}x{num}
@@ -174,7 +186,7 @@ function LiveViewPage() {
                 onClick={() => setSelectedId(cam.camera_id)}
               >
                 {/* Cabecera de la tarjeta (Nombre y estado) */}
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/30 dark:from-black/80 to-transparent p-2 z-10 flex justify-between items-start pointer-events-none">
+                <div className="absolute top-0 left-0 right-0 bg-linear-to-b from-black/30 dark:from-black/80 to-transparent p-2 z-10 flex justify-between items-start pointer-events-none">
                   <div className="pointer-events-auto"> {/* Para permitir seleccionar texto si se quiere */}
                     <h3 className="text-white font-bold text-sm drop-shadow-md">
                       {cam.name}
@@ -183,7 +195,21 @@ function LiveViewPage() {
                       {cam.current_status === 'online' ? '● En vivo' : '● Desconectado'}
                     </span>
                   </div>
-                  
+                
+                {/* La intencion es que se pueda cambiar el stream de la camara a uno secundario */}
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleStream(containerId);
+                    }}
+                    className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 hover:bg-indigo-600 text-white p-1.5 rounded"
+                    title="Pantalla Completa"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 23 23" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </button>
+
                   {/* Botón Fullscreen */}
                   <button 
                     onClick={(e) => {

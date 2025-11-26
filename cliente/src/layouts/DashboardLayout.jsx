@@ -16,13 +16,13 @@ function DashboardLayout() {
       <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
 
       {/* 2. Área Principal (Header + Contenido) */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      <div className="flex-1 flex flex-col overflow-hidden relative ">
         
         {/* Toggle button visible sobre el header (móvil/desktop) */}
         <button
           aria-label="Toggle sidebar"
           onClick={toggleSidebar}
-          className="absolute top-4 left-4 z-30 p-2 rounded-md bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none"
+          className="absolute top-4 left-4 z-30 p-2 rounded-md bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none hover:cursor-pointer"
         >
           {/* simple icon */}
           <span className="text-xl dark:text-white">☰</span>
