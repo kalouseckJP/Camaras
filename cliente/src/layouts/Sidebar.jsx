@@ -7,17 +7,17 @@ function Sidebar({ isOpen = true, onToggle }) {
   const { isAdmin } = useAuth();
 
   // Clases base para los enlaces
-  const baseLinkClasses = "flex items-center p-3 rounded-lg transition-colors duration-200";
+  const baseLinkClasses = "flex items-center p-3 rounded-lg transition-colors duration-180";
   // Función para determinar las clases del NavLink (activo vs inactivo)
   const getNavLinkClasses = ({ isActive }) => 
     isActive
-      ? `${baseLinkClasses} bg-indigo-600 text-white` // Estilo activo
-      : `${baseLinkClasses} text-gray-300 hover:bg-gray-700`; // Estilo inactivo
+      ? `${baseLinkClasses} bg-indigo-400 text-white hover:bg-indigo-500` // Estilo activo
+      : `${baseLinkClasses} hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-700`; // Estilo inactivo
 
   return (
-    <aside className={`flex flex-col h-full bg-gray-800 transition-width duration-300 ${isOpen ? 'w-64' : 'w-16'} p-2`}>
+    <aside className={`flex flex-col h-full bg-gray-200 dark:bg-gray-800 transition-width duration-300 ${isOpen ? 'w-64' : 'w-16'} p-2`}>
       {/* Logo o Título */}
-      <div className={`text-white text-2xl font-bold mb-6 p-3 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`dark:text-white text-2xl font-bold mb-6 p-3 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         App Cámaras
       </div>
 
@@ -101,7 +101,7 @@ function Sidebar({ isOpen = true, onToggle }) {
       <div className="p-2">
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center p-2 rounded-md bg-gray-700 hover:bg-gray-600 text-sm"
+          className="w-full flex items-center justify-center p-2 rounded-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm hover:cursor-pointer"
           aria-label="Toggle sidebar"
         >
           {isOpen ? 'Cerrar' : 'Abrir'}

@@ -8,9 +8,9 @@ function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => setSidebarOpen((s) => !s);
-
+  
   return (
-    <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 dark:text-white overflow-hidden">
       
       {/* 1. Sidebar Fijo / Collapsible */}
       <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
@@ -22,12 +22,11 @@ function DashboardLayout() {
         <button
           aria-label="Toggle sidebar"
           onClick={toggleSidebar}
-          className="absolute top-4 left-4 z-30 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none"
+          className="absolute top-4 left-4 z-30 p-2 rounded-md bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none"
         >
           {/* simple icon */}
-          <span className="text-xl">☰</span>
+          <span className="text-xl dark:text-white">☰</span>
         </button>
-
         {/* 2.1. Header */}
         <Header />
 

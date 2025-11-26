@@ -65,7 +65,7 @@ function EditUserPage() {
     }
   };
 
-  if (loading) return <div className="text-white p-8">Cargando...</div>;
+  if (loading) return <div className="dark:text-white p-8">Cargando...</div>;
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto mt-10 border border-gray-700">

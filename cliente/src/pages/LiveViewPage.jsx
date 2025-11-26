@@ -107,20 +107,20 @@ function LiveViewPage() {
     <div className="flex flex-col h-full">
       
       {/* BARRA SUPERIOR: Título y Botones de Layout */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-gray-800 p-3 rounded-lg shadow">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-gray-200 dark:bg-gray-800 p-3 rounded-lg shadow dark:bg-gray-800">
         <div>
-          <h1 className="text-xl font-bold text-white">Centro de Monitoreo</h1>
-          <p className="text-xs text-gray-400">Arrastra las cámaras para organizar</p>
+          <h1 className="text-xl font-bold dark:text-white">Centro de Monitoreo</h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Arrastra las cámaras para organizar</p>
         </div>
         
         <div className="flex items-center space-x-2 mt-2 md:mt-0">
-          <span className="text-gray-400 text-sm mr-2">Vistas:</span>
+          <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Vistas:</span>
           {[1, 2, 3].map(num => (
             <button 
               key={num}
               onClick={() => setGridCols(num)}
               className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
-                gridCols === num ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                gridCols === num ? 'bg-indigo-400 text-white hover:bg-indigo-500' : 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               {num}x{num}
@@ -174,7 +174,7 @@ function LiveViewPage() {
                 onClick={() => setSelectedId(cam.camera_id)}
               >
                 {/* Cabecera de la tarjeta (Nombre y estado) */}
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-2 z-10 flex justify-between items-start pointer-events-none">
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/30 dark:from-black/80 to-transparent p-2 z-10 flex justify-between items-start pointer-events-none">
                   <div className="pointer-events-auto"> {/* Para permitir seleccionar texto si se quiere */}
                     <h3 className="text-white font-bold text-sm drop-shadow-md">
                       {cam.name}
@@ -200,7 +200,7 @@ function LiveViewPage() {
                 </div>
 
                 {/* Contenido del Video */}
-                <div className="flex-1 relative min-h-[200px] bg-gray-900 flex items-center justify-center">
+                <div className="flex-1 relative min-h-[200px] bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
                   
                   {isUsb ? (
                     <USBCameraView />
