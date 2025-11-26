@@ -21,14 +21,14 @@ function AddUserPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto mt-10 border border-gray-700">
-      <h2 className="text-white text-2xl mb-6 font-semibold">Registrar Nuevo Usuario</h2>
+    <form onSubmit={handleSubmit} className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md mx-auto mt-10 border border-gray-700">
+      <h2 className="dark:text-white text-2xl mb-6 font-semibold">Registrar Nuevo Usuario</h2>
 
       <div className="mb-4">
-        <label className="block text-gray-300 text-sm font-bold mb-2">Nombre de Usuario</label>
+        <label className="block dark:text-gray-300 text-sm font-bold mb-2">Nombre de Usuario</label>
         <input
           type="text"
-          className="w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
+          className="w-full bg-gray-100 dark:bg-gray-700 ext-black dark:text-white border border-gray-600 rounded p-2"
           value={formData.username}
           onChange={(e) => setFormData({...formData, username: e.target.value})}
           required
@@ -36,10 +36,10 @@ function AddUserPage() {
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-300 text-sm font-bold mb-2">Contraseña</label>
+        <label className="block dark:text-gray-300 text-sm font-bold mb-2">Contraseña</label>
         <input
           type="password"
-          className="w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
+          className="w-full bg-gray-100 dark:bg-gray-700 ext-black dark:text-white border border-gray-600 rounded p-2"
           value={formData.password}
           onChange={(e) => setFormData({...formData, password: e.target.value})}
           required
@@ -47,9 +47,9 @@ function AddUserPage() {
       </div>
 
       <div className="mb-6">
-        <label className="block text-gray-300 text-sm font-bold mb-2">Rol</label>
+        <label className="block dark:text-gray-300 text-sm font-bold mb-2">Rol</label>
         <select
-          className="w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
+          className="w-full bg-gray-100 dark:bg-gray-700 dark:text-white border border-gray-600 rounded p-2"
           value={formData.role_id}
           onChange={(e) => setFormData({...formData, role_id: e.target.value})}
         >
@@ -59,7 +59,7 @@ function AddUserPage() {
       </div>
 
       <div className="flex justify-end">
-        <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded">
+        <button type="submit" className="bg-indigo-400 dark:bg-indigo-600 hover:bg-indigo-500 dark:hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded">
           Guardar Usuario
         </button>
       </div>

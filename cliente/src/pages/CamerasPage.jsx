@@ -60,11 +60,11 @@ function CamerasPage() {
       </div>
 
       {/* TABLA TAILWIND */}
-      <div className="dark:bg-gray-800 shadow-md rounded-lg overflow-hidden border border-gray-700">
-        <table className="dark:bg-gray-900 min-w-full leading-normal dark:text-gray-300">
+      <div className="bg-gray-100 dark:bg-gray-800 shadow-md rounded-lg overflow-hidden border border-gray-700">
+        <table className=" dark:bg-gray-900 min-w-full leading-normal dark:text-gray-300">
           <thead>
-            <tr>
-              <th className="px-5 py-3 border-b-2 border-gray-700 text-left text-xs font-semibold uppercase tracking-wider">
+            <tr className='bg-gray-200'>
+              <th className="px-5 py-3 border-b-2  border-gray-700 text-left text-xs font-semibold uppercase tracking-wider">
                 ID
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-700 text-left text-xs font-semibold uppercase tracking-wider">
@@ -84,7 +84,7 @@ function CamerasPage() {
           <tbody>
             {cameras.length === 0 ? (
               <tr>
-                <td colSpan="5" className="px-5 py-5 bg-gray-800 text-sm text-gray-300 text-center">
+                <td colSpan="5" className="px-5 py-5 dark:bg-gray-800 text-sm dark:text-gray-300 text-center">
                   No hay cámaras registradas.
                 </td>
               </tr>
@@ -113,14 +113,14 @@ function CamerasPage() {
                       {/* Botón Editar (Navega a una ruta de edición, o reusa el form) */}
                       <button
                         onClick={() => navigate(`/editar-camera/${cam.camera_id}`)}
-                        className="text-blue-400 hover:text-blue-300">
+                        className="text-blue-400 hover:text-blue-300 hover:cursor-pointer">
                         Editar
                       </button>
                       
                       {/* Botón Eliminar */}
                       <button 
                         onClick={() => handleDelete(cam.camera_id)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-400 hover:text-red-300 hover:cursor-pointer"
                       >
                         Eliminar
                       </button>

@@ -104,7 +104,7 @@ function Sidebar({ isOpen = true, onToggle }) {
           className="w-full flex items-center justify-center p-2 rounded-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm hover:cursor-pointer"
           aria-label="Toggle sidebar"
         >
-          {isOpen ? 'Cerrar' : 'Abrir'}
+          {isOpen ? 'Cerrar' : '●'}
         </button>
       </div>
     </aside>

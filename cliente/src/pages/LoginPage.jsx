@@ -41,14 +41,12 @@ function LoginPage() {
 
   return (
     <form 
-      // Aquí estaban los "..."
-      className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-sm border border-gray-700" 
+      className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-sm border border-gray-700" 
       onSubmit={handleSubmit}
     >
       
       <h2 
-        // Aquí estaban los "..."
-        className="text-white text-2xl font-semibold mb-6 text-center"
+        className="dark:text-white text-2xl font-semibold mb-6 text-center"
       >
         Iniciar Sesión
       </h2>
@@ -63,14 +61,14 @@ function LoginPage() {
         <label 
           htmlFor="username" 
           // Aquí estaban los "..."
-          className="block text-gray-300 text-sm font-bold mb-2"
+          className="block dark:text-gray-300 text-sm font-bold mb-2"
         >
           Nombre de Usuario
         </label>
         <input
           type="text" id="username"
           // Aquí estaban los "..."
-          className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-700 placeholder-gray-400"
+          className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 dark:text-gray-100 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-700 placeholder-gray-400"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -80,14 +78,14 @@ function LoginPage() {
         <label 
           htmlFor="password" 
           // Aquí estaban los "..."
-          className="block text-gray-300 text-sm font-bold mb-2"
+          className="block dark:text-gray-300 text-sm font-bold mb-2"
         >
           Contraseña
         </label>
         <input
           type="password" id="password"
           // Aquí estaban los "..."
-          className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-100 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-700 placeholder-gray-400"
+          className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 dark:text-gray-100 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-700 dark:placeholder-gray-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -97,7 +95,7 @@ function LoginPage() {
         {/* Asegúrate de que el botón sea type="submit" */}
         <button
           // Aquí estaban los "..."
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200"
+          className="bg-indigo-400 hover:bg-indigo-500 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200"
           type="submit"
         >
           Ingresar

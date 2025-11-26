@@ -58,17 +58,17 @@ function EditCameraPage() {
     }
   };
 
-  if (loading) return <div className="text-white p-8">Cargando datos...</div>;
+  if (loading) return <div className="dark:text-white p-8">Cargando datos...</div>;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-xl max-w-2xl mx-auto mt-10">
-      <h2 className="text-white text-2xl mb-6 font-semibold">Editar Cámara</h2>
+    <form onSubmit={handleSubmit} className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-2xl mx-auto mt-10">
+      <h2 className="dark:text-white text-2xl mb-6 font-semibold">Editar Cámara</h2>
 
       <div className="mb-4">
-        <label className="block text-gray-300 mb-2">Nombre</label>
+        <label className="block dark:text-gray-300 mb-2">Nombre</label>
         <input
           type="text"
-          className="w-full bg-gray-700 text-white rounded p-2"
+          className="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded p-2 border border-gray-700"
           value={formData.name}
           onChange={(e) => setFormData({...formData, name: e.target.value})}
           required
@@ -76,20 +76,20 @@ function EditCameraPage() {
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-300 mb-2">IP</label>
+        <label className="block dark:text-gray-300 mb-2">IP</label>
         <input
           type="text"
-          className="w-full bg-gray-700 text-white rounded p-2"
+          className="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded p-2 border border-gray-700"
           value={formData.ip_address}
           onChange={(e) => setFormData({...formData, ip_address: e.target.value})}
         />
       </div>
 
       <div className="mb-6">
-        <label className="block text-gray-300 mb-2">Stream URL</label>
+        <label className="block dark:text-gray-300 mb-2">Stream URL</label>
         <input
           type="text"
-          className="w-full bg-gray-700 text-white rounded p-2"
+          className="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded p-2 border border-gray-700"
           value={formData.stream_url_main}
           onChange={(e) => setFormData({...formData, stream_url_main: e.target.value})}
           required
@@ -100,13 +100,13 @@ function EditCameraPage() {
         <button 
           type="button"
           onClick={() => navigate('/cameras')}
-          className="text-gray-400 hover:text-white"
+          className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white font-bold py-2 px-4 hover:cursor-pointer"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          className="bg-blue-600 text-white font-bold py-2 px-6 rounded hover:bg-blue-700"
+          className="bg-indigo-400 dark:bg-blue-600 hover:bg-indigo-500 dark:hover:bg-blue-700 text-white font-bold py-2 px-6 rounded hover:cursor-pointer"
         >
           Guardar Cambios
         </button>

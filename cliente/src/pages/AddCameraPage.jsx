@@ -6,7 +6,7 @@ function AddCameraPage() {
   return (
     <div>
       {/* Título de la Página */}
-      <h1 className="text-3xl font-bold mb-6 text-white">
+      <h1 className="text-3xl font-bold mb-6 dark:text-white">
         Añadir Nueva Cámara
       </h1>
       
