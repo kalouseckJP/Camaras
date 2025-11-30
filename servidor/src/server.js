@@ -33,6 +33,7 @@ app.use('/api/users', userRoutes);
 app.post('/api/recordings/start', recordingController.start);
 app.post('/api/recordings/stop', recordingController.stop);
 app.get('/api/recordings', recordingController.list);
+app.get('/api/recordings/download/:id', recordingController.downloadVideo);
 // Esto crea la URL base: http://localhost:3000/api/auth/login
 
 const PORT = process.env.PORT || 3000;

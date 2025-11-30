@@ -14,6 +14,7 @@ import EditCameraPage from './pages/EditCameraPage';
 import UsersPage from './pages/UsersPage';
 import AddUserPage from './pages/AddUserPage';
 import EditUserPage from './pages/EditUserPage';
+import RecordingsPage from './pages/RecordingsPage';
 
 
 // Importar el guardia
@@ -49,7 +50,7 @@ function App() {
           <Route path="/users" element={<UsersPage />} />
           <Route path="/add-user" element={<AddUserPage />} />
           <Route path="/edit-user/:id" element={<EditUserPage />} />
-          {/* <Route path="/recordings" element={<RecordingsPage />} /> */}
+          <Route path="/grabaciones" element={<RecordingsPage />} />
           {/* <Route path="/admin" element={<AdminPage />} /> */}
         
         </Route>
