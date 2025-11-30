@@ -15,6 +15,8 @@ import UsersPage from './pages/UsersPage';
 import AddUserPage from './pages/AddUserPage';
 import EditUserPage from './pages/EditUserPage';
 import RecordingsPage from './pages/RecordingsPage';
+import DashboardPage from './pages/DashboardPage';
+import LogsPage from './pages/LogsPage';
 
 
 // Importar el guardia
@@ -25,14 +27,14 @@ function RootRedirect() {
   const { isAuthenticated } = useAuth();
   
   // Si estoy logueado, ir a "/live". Si no, a "/login".
-  return <Navigate to={isAuthenticated ? "/live" : "/login"} replace />;
+  return <Navigate to={isAuthenticated ? "/" : "/login"} replace />;
 }
 
 function App() {
   return (
     <Routes>
       {/* 1. Redirección de la ruta raíz */}
-      <Route path="/" element={<RootRedirect />} />
+      
 
       {/* 2. Rutas Públicas (Login) */}
       <Route element={<AuthLayout />}>
@@ -41,7 +43,12 @@ function App() {
 
       {/* 3. Rutas Protegidas (Dashboard) */}
       <Route element={<ProtectedRoute />}> {/* <-- El Guardia */}
-        <Route element={<DashboardLayout />}> {/* <-- Layout del Dashboard */}
+        <Route element={<DashboardLayout />}>
+        {/* Ruta raíz redirige a Dashboard */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        <Route path="/dashboard" element={<DashboardPage />} />
+ 
           
           <Route path="/live" element={<LiveViewPage />} />
           <Route path="/agregar" element={<AddCameraPage />} />
@@ -51,6 +58,7 @@ function App() {
           <Route path="/add-user" element={<AddUserPage />} />
           <Route path="/edit-user/:id" element={<EditUserPage />} />
           <Route path="/grabaciones" element={<RecordingsPage />} />
+          <Route path="/logs" element={<LogsPage />} />
           {/* <Route path="/admin" element={<AdminPage />} /> */}
         
         </Route>

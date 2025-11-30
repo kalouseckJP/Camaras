@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('token', token); // <-- IMPORTANTE: Guardar el token
 
       // 4. REDIRIGIR
-      navigate('/live');
+      navigate('/dashboard');
       return true; // Éxito
 
     } catch (error) {

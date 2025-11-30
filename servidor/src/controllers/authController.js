@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // <--- 1. IMPORTAR JWT
+const ActivityLog = require('../models/ActivityLog');
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -12,7 +13,10 @@ const login = async (req, res) => {
     
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) return res.status(401).json({ error: 'Contraseña incorrecta' });
+    
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
+    await ActivityLog.create(user.user_id, 'LOGIN', null, ip);
     // --------------------------------------------------------
     // 2. GENERAR EL TOKEN REAL
     // --------------------------------------------------------
@@ -35,7 +39,7 @@ const login = async (req, res) => {
     
     const { password_hash, ...userWithoutPassword } = user;
     
-    console.log('✅ Token generado exitosamente');
+    //console.log('✅ Token generado exitosamente');
 
     res.json({
       message: 'Login exitoso',

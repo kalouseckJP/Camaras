@@ -1,4 +1,3 @@
-// src/services/recordingService.js
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
@@ -22,31 +21,44 @@ const startRecording = async (cameraId, streamUrl) => {
   console.log(`🎥 Iniciando grabación: ${filename}`);
 
   return new Promise((resolve, reject) => {
+    
+    // 1. CONSTRUIMOS EL FILTRO MANUALMENTE (Más seguro)
+    // Cadena: Texto -> Escalado -> Formato de Pixel
+    // Nota: Usamos 'arial.ttf' asumiendo que está en la raíz donde corres "node"
+    const videoFilters = [
+      // 1. Fecha y Hora
+      "drawtext=fontfile='arial.ttf':text='%{localtime\\:%Y-%m-%d %H\\\\\\:%M\\\\\\:%S}':fontcolor=white:fontsize=24:box=1:boxcolor=black@0.5:x=10:y=10",
+      
+      // 2. Censura (Descomenta esta línea) 👇
+      "drawbox=x=100:y=100:w=200:h=100:color=black:t=fill",
+      
+      // 3. Escalado y Formato
+      "scale=1280:-2",
+      "format=yuv420p"
+    ].join(',');
+
     const command = ffmpeg(streamUrl)
       .inputOptions([
           '-timeout 5000000',
-          '-use_wallclock_as_timestamps 1', // Arregla tiempos
+          '-use_wallclock_as_timestamps 1', 
       ])
       .videoCodec('libx264')
+      
+      // 2. USAMOS LA CADENA DE FILTROS CREADA ARRIBA
+      .complexFilter(videoFilters)
+
       .outputOptions([
-          '-r 20', // Forzar 20 FPS (estabilidad)
-          '-vf scale=1280:-2,format=yuv420p', // 720p y colores compatibles Windows
+          '-r 20', 
           '-preset ultrafast',
-          '-an', // Sin audio
-          
-          // 👇 ESTO ES EL SEGURO DE VIDA PARA WINDOWS 👇
-          // Si el cierre suave falla, esto permite que el archivo se vea igual.
+          '-an', 
           '-movflags frag_keyframe+empty_moov+default_base_moof',
-          // ---------------------------------------------
-          
-          '-t 300' // Límite 5 min
+          '-t 300' 
       ])
-      .on('stderr', (stderrLine) => {
-         // Descomenta si necesitas depurar, pero ensucia mucho la consola
-         // console.log('🎞️ FFmpeg Log:', stderrLine);
-      })
-      .on('start', async () => {
-        // Guardar en BDD
+      
+      // 3. MODO DEBUG: Ver qué comando exacto se ejecuta
+      .on('start', async (commandLine) => {
+        console.log('💡 COMANDO FFMPEG:', commandLine); // <--- ESTO NOS DIRÁ EL ERROR SI FALLA
+
         const query = `
           INSERT INTO "Recordings" (camera_id, file_path, start_time, trigger_type)
           VALUES ($1, $2, NOW(), 'manual')
@@ -62,16 +74,19 @@ const startRecording = async (cameraId, streamUrl) => {
         };
         resolve(activeRecordings[cameraId]);
       })
+      
+      .on('stderr', (stderrLine) => {
+          // Descomenta solo si sigue fallando para ver el detalle
+          // console.log('🎞️ Log:', stderrLine);
+      })
+      
       .on('error', (err) => {
-        // Ignoramos errores si son causados por nosotros deteniéndolo
         if (!err.message.includes('SIGINT') && !err.message.includes('Output stream closed')) {
            console.error('❌ Error FFmpeg:', err.message);
         }
-        // No borramos activeRecordings aquí para permitir que stopRecording haga la limpieza DB
       })
       .on('end', () => {
-        console.log('✅ FFmpeg terminó el proceso internamente.');
-        // Llamamos a stopRecording para asegurar limpieza de DB si terminó por tiempo
+        console.log('✅ FFmpeg terminó internamente.');
         if (activeRecordings[cameraId]) {
            stopRecording(cameraId); 
         }
@@ -84,30 +99,22 @@ const stopRecording = async (cameraId) => {
   const recordSession = activeRecordings[cameraId];
   if (!recordSession) return;
 
-  console.log('🛑 Intentando detener grabación suavemente...');
+  console.log('🛑 Deteniendo grabación...');
 
   try {
-    // 1. INTENTO SUAVE: Enviamos 'q' (Quit) a la entrada de FFmpeg
-    // Esto funciona mejor en Windows que SIGINT
     if (recordSession.command.ffmpegProc && recordSession.command.ffmpegProc.stdin) {
         recordSession.command.ffmpegProc.stdin.write('q');
     } else {
-        // Fallback: Si no podemos escribir, matamos el proceso
         recordSession.command.kill('SIGINT');
     }
   } catch (err) {
-      // Si falla escribir 'q', forzamos muerte
       recordSession.command.kill('SIGINT');
   }
 
-  // 2. Esperar a que se cierre el archivo
   setTimeout(async () => {
     try {
       if (fs.existsSync(path.join(storageDir, recordSession.filePath))) {
-        
         const stats = fs.statSync(path.join(storageDir, recordSession.filePath));
-        
-        // Solo actualizamos si el archivo tiene tamaño > 0
         if (stats.size > 0) {
             const query = `
               UPDATE "Recordings" 
@@ -115,25 +122,18 @@ const stopRecording = async (cameraId) => {
               WHERE recording_id = $2
             `;
             await db.query(query, [stats.size, recordSession.recordingId]);
-            console.log(`💾 Grabación guardada exitosamente: ${recordSession.filePath} (${(stats.size / 1024).toFixed(2)} KB)`);
+            console.log(`💾 Guardado: ${recordSession.filePath}`);
         } else {
-            console.warn('⚠️ Archivo vacío (0 bytes). Borrando...');
             await db.query('DELETE FROM "Recordings" WHERE recording_id = $1', [recordSession.recordingId]);
         }
-      
       } else {
-        console.warn('⚠️ Archivo no encontrado en disco.');
         await db.query('DELETE FROM "Recordings" WHERE recording_id = $1', [recordSession.recordingId]);
       }
-
     } catch (e) {
-      console.error('Error finalizando grabación:', e);
+      console.error('Error finalizando:', e);
     }
-    
-    // 3. Limpieza final de memoria
     delete activeRecordings[cameraId];
-    
-  }, 1500); // Damos 1.5 segundos para asegurar escritura en disco lento
+  }, 1500); 
 };
 
 module.exports = { startRecording, stopRecording, activeRecordings };

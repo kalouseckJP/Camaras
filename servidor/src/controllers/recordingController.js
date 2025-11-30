@@ -2,6 +2,7 @@ const recordingService = require('../services/recordingService');
 const db = require('../config/db'); // Para listar grabaciones
 const path = require('path');
 const fs = require('fs');
+const ffmpeg = require('fluent-ffmpeg');
 
 // Iniciar
 const start = async (req, res) => {
@@ -80,5 +81,102 @@ const downloadVideo = async (req, res) => {
     res.status(500).json({ error: 'Error interno' });
   }
 };
+const deleteRecording = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-module.exports = { start, stop, list, downloadVideo };
+    // 1. Obtener el nombre del archivo antes de borrar el registro
+    const queryFind = 'SELECT file_path FROM "Recordings" WHERE recording_id = $1';
+    const result = await db.query(queryFind, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Grabación no encontrada' });
+    }
+
+    const filename = result.rows[0].file_path;
+    const filePath = path.join(__dirname, '../../storage', filename);
+
+    // 2. Borrar archivo físico (si existe)
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath); // Borrado físico
+        console.log(`🗑️ Archivo borrado: ${filename}`);
+      } catch (err) {
+        console.error('Error borrando archivo físico:', err);
+        // No detenemos el proceso, queremos borrar el registro de BD de todos modos
+      }
+    } else {
+      console.warn('⚠️ El archivo físico no existía, borrando solo de BD.');
+    }
+
+    // 3. Borrar registro de la Base de Datos
+    await db.query('DELETE FROM "Recordings" WHERE recording_id = $1', [id]);
+
+    res.json({ message: 'Grabación eliminada correctamente' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al eliminar grabación' });
+  }
+};
+const trimVideo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { start, duration } = req.body; // Ej: start="00:00:10", duration="30"
+
+    // A. Buscar el nombre del archivo en la BD
+    const query = 'SELECT file_path, camera_id FROM "Recordings" WHERE recording_id = $1';
+    const result = await db.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Grabación no encontrada' });
+    }
+
+    const originalFilename = result.rows[0].file_path;
+    const inputPath = path.join(__dirname, '../../storage', originalFilename);
+    const outputFilename = `clip-${Date.now()}-${originalFilename}`;
+    const outputPath = path.join(__dirname, '../../storage', outputFilename);
+
+    // B. Verificar que el archivo original exista
+    if (!fs.existsSync(inputPath)) {
+      return res.status(404).json({ error: 'El archivo de video original no existe en disco' });
+    }
+
+    console.log(`✂️ Recortando video: ${originalFilename} (Inicio: ${start}, Duración: ${duration}s)`);
+
+    // C. Ejecutar FFmpeg para cortar
+    ffmpeg(inputPath)
+      .setStartTime(start)
+      .setDuration(duration)
+      .output(outputPath)
+      .videoCodec('copy') // Copia exacta (muy rápido, sin perder calidad)
+      .audioCodec('copy')
+      .on('end', () => {
+        console.log('✅ Recorte finalizado. Enviando archivo...');
+        
+        // D. Enviar el archivo al navegador
+        res.download(outputPath, outputFilename, (err) => {
+          // E. Borrar el clip temporal después de enviar (limpieza)
+          if (!err) {
+             try {
+               fs.unlinkSync(outputPath);
+             } catch (e) { console.error('Error borrando clip temporal:', e); }
+          }
+        });
+      })
+      .on('error', (err) => {
+        console.error('❌ Error al recortar:', err);
+        if (!res.headersSent) {
+           res.status(500).json({ error: 'Error procesando el video' });
+        }
+      })
+      .run();
+
+  } catch (error) {
+    console.error(error);
+    if (!res.headersSent) res.status(500).json({ error: 'Error interno' });
+  }
+};
+
+// 👇 3. ¡NO OLVIDES EXPORTARLA! 👇
+module.exports = { start, stop, list, downloadVideo, deleteRecording, trimVideo };

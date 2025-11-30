@@ -25,14 +25,14 @@ function Sidebar({ isOpen = true, onToggle }) {
       <nav className="flex-1">
         <ul className="space-y-2">
           <li>
-            <NavLink to="/live" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Vista en Vivo</span>
+            <NavLink to="/dashboard" className={getNavLinkClasses}>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Dashboard</span>
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
           <li>
-            <NavLink to="/ordenar" className={getNavLinkClasses}>
-              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Ordenar Cámaras</span>
+            <NavLink to="/live" className={getNavLinkClasses}>
+              <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Vista en Vivo</span>
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
           </li>
@@ -57,14 +57,8 @@ function Sidebar({ isOpen = true, onToggle }) {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/grabaciones" className={getNavLinkClasses}>
+              <NavLink to="/grabaciones-p" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Programar grabaciones</span>
-                {!isOpen && <span className="mx-auto">●</span>}
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/editar" className={getNavLinkClasses}>
-                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Editar cámaras</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
             </li>

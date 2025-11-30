@@ -5,6 +5,10 @@ const recordingController = require('./controllers/recordingController');
 const authRoutes = require('./routes/authRoutes'); // Importar rutas
 const cameraRoutes = require('./routes/cameraRoutes'); // Importar rutas
 const userRoutes = require('./routes/userRoutes'); // Importar rutas
+const statsController = require('./controllers/statsController'); // Importar
+const verifyToken = require('./middlewares/authMiddleware');
+const logController = require('./controllers/logController'); // Importar
+
 
 const app = express();
 
@@ -34,6 +38,10 @@ app.post('/api/recordings/start', recordingController.start);
 app.post('/api/recordings/stop', recordingController.stop);
 app.get('/api/recordings', recordingController.list);
 app.get('/api/recordings/download/:id', recordingController.downloadVideo);
+app.delete('/api/recordings/:id', recordingController.deleteRecording);
+app.get('/api/stats', verifyToken, statsController.getSummary);
+app.get('/api/logs', verifyToken, logController.getLogs);
+app.post('/api/recordings/trim/:id', recordingController.trimVideo);
 // Esto crea la URL base: http://localhost:3000/api/auth/login
 
 const PORT = process.env.PORT || 3000;
