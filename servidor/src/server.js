@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors'); // Si no lo tienes: npm install cors
+const cors = require('cors');
+const recordingController = require('./controllers/recordingController');
 const authRoutes = require('./routes/authRoutes'); // Importar rutas
 const cameraRoutes = require('./routes/cameraRoutes'); // Importar rutas
 const userRoutes = require('./routes/userRoutes'); // Importar rutas
@@ -22,10 +23,16 @@ app.use(cors({
 })); // Permite que React se conecte
 app.use(express.json()); // <--- CRUCIAL: Permite leer JSON del Body
 
+const path = require('path');
+app.use('/videos', express.static(path.join(__dirname, '../storage')));
+
 // Rutas
 app.use('/api/auth', authRoutes); 
 app.use('/api/cameras', cameraRoutes);
 app.use('/api/users', userRoutes);
+app.post('/api/recordings/start', recordingController.start);
+app.post('/api/recordings/stop', recordingController.stop);
+app.get('/api/recordings', recordingController.list);
 // Esto crea la URL base: http://localhost:3000/api/auth/login
 
 const PORT = process.env.PORT || 3000;

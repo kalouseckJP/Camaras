@@ -11,6 +11,37 @@ function LiveViewPage() {
   
   const dragIndexRef = useRef(null);
 
+  const [recordingCams, setRecordingCams] = useState({}); 
+
+  const toggleRecording = async (cam) => {
+    const isRecording = recordingCams[cam.camera_id];
+    const token = localStorage.getItem('token');
+
+    try {
+      if (isRecording) {
+        // DETENER
+        await api.post('/recordings/stop', { cameraId: cam.camera_id }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRecordingCams(prev => ({ ...prev, [cam.camera_id]: false }));
+        alert('Grabación detenida');
+      } else {
+        // INICIAR
+        await api.post('/recordings/start', { 
+          cameraId: cam.camera_id, 
+          streamUrl: cam.stream_url_main 
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRecordingCams(prev => ({ ...prev, [cam.camera_id]: true }));
+        alert('Grabación iniciada');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Error con la grabación');
+    }
+  };
+
   // --- 1. CARGA DE DATOS (Base de Datos + LocalStorage + USB) ---
   useEffect(() => {
     const fetchData = async () => {
@@ -196,7 +227,7 @@ function LiveViewPage() {
                     </span>
                   </div>
                 
-                {/* La intencion es que se pueda cambiar el stream de la camara a uno secundario */}
+                {/* La intencion es que se pueda cambiar el stream de la camara a uno secundario
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
@@ -209,6 +240,24 @@ function LiveViewPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                     </svg>
                   </button>
+                  */}
+                  <div className="pointer-events-auto ...">
+                  {/* ... titulo ... */}
+                  
+                  {/* BOTÓN GRABAR (Círculo rojo) */}
+                  {!isUsb && ( // Solo mostrar si NO es USB
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleRecording(cam);}}
+                      className={`ml-2 px-2 rounded text-xs font-bold ${
+                        recordingCams[cam.camera_id] 
+                          ? 'bg-red-600 text-white animate-pulse' // Parpadea si graba
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      {recordingCams[cam.camera_id] ? 'REC ●' : 'GRABAR'}
+                    </button>
+                  )}
+                </div>
 
                   {/* Botón Fullscreen */}
                   <button 
