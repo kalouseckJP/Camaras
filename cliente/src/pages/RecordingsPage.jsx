@@ -82,28 +82,28 @@ function RecordingsPage() {
       {/* CABECERA Y FILTROS */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Galería de Grabaciones</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-3xl font-bold dark:text-white">Galería de Grabaciones</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
             Almacenamiento visible: <span className="text-indigo-400 font-bold">{totalMB} MB</span>
           </p>
         </div>
         
         {/* Barra de Filtros */}
-        <div className="flex flex-wrap gap-4 bg-gray-800 p-3 rounded-lg border border-gray-700 w-full md:w-auto">
+        <div className="flex flex-wrap gap-4 bg-gray-200 dark:bg-gray-800 p-3 rounded-lg border border-gray-300 dark:border-gray-700 w-full md:w-auto">
           <div className="flex flex-col">
-            <label className="text-xs text-gray-400 mb-1">Fecha</label>
+            <label className="text-xs text-gray-600 dark:text-gray-400 mb-1">Fecha</label>
             <input 
               type="date" 
-              className="bg-gray-700 text-white rounded p-1 text-sm border border-gray-600 focus:border-indigo-500 outline-none"
+              className="bg-gray-100 dark:bg-gray-700 dark:text-white rounded p-1 text-sm border border-gray-300 dark:border-gray-600 focus:border-indigo-500 outline-none"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
           </div>
 
           <div className="flex flex-col">
-            <label className="text-xs text-gray-400 mb-1">Cámara</label>
+            <label className="text-xs text-gray-600 dark:text-gray-400 mb-1">Cámara</label>
             <select 
-              className="bg-gray-700 text-white rounded p-1.5 text-sm border border-gray-600 focus:border-indigo-500 outline-none w-40"
+              className="bg-gray-100 dark:bg-gray-700 dark:text-white rounded text-sm border border-gray-300 dark:border-gray-600 focus:border-indigo-500 outline-none w-40 p-1.5"
               value={selectedCamera}
               onChange={(e) => setSelectedCamera(e.target.value)}
             >
@@ -127,8 +127,8 @@ function RecordingsPage() {
       
       {/* MENSAJE SI ESTÁ VACÍO */}
       {recordings.length === 0 && (
-        <div className="text-center py-20 bg-gray-800/50 rounded-lg border border-dashed border-gray-700">
-          <p className="text-gray-400 text-lg">No se encontraron grabaciones con estos filtros.</p>
+        <div className="text-center py-20 bg-gray-300/50 dark:bg-gray-800/50 rounded-lg border border-dashed border-gray-700">
+          <p className="text-gray-600 dark:text-gray-400 text-lg">No se encontraron grabaciones con estos filtros.</p>
         </div>
       )}
 
@@ -137,7 +137,7 @@ function RecordingsPage() {
         {recordings.map(rec => (
           <div 
             key={rec.recording_id} 
-            className="bg-gray-800 border border-gray-700 p-4 rounded-lg shadow-lg flex flex-col relative group"
+            className="bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-4 rounded-lg shadow-lg flex flex-col relative group"
           >
             
             {/* --- BOTONES FLOTANTES (Hover) --- */}
@@ -170,14 +170,14 @@ function RecordingsPage() {
             {/* -------------------------------- */}
 
             <div className="flex justify-between items-start mb-2 pr-16">
-              <h3 className="text-white font-bold text-lg truncate" title={rec.camera_name}>{rec.camera_name}</h3>
+              <h3 className="dark:text-white font-bold text-lg truncate" title={rec.camera_name}>{rec.camera_name}</h3>
             </div>
 
             <div className="flex justify-between items-center mb-2">
-               <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
+               <span className="text-xs bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-300 px-2 py-1 rounded">
                 {(rec.file_size_bytes / 1024 / 1024).toFixed(1)} MB
               </span>
-              <p className="text-gray-400 text-xs">
+              <p className="text-gray-600 dark:text-gray-400 text-xs">
                 {new Date(rec.start_time).toLocaleString()}
               </p>
             </div>
@@ -194,7 +194,7 @@ function RecordingsPage() {
             {/* BOTÓN DESCARGAR */}
             <button
               onClick={() => handleDownload(rec.recording_id)}
-              className="mt-auto w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center gap-2 transition-colors border border-gray-600"
+              className="cursor-pointer mt-auto w-full bg-gray-500 dark:bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center gap-2 transition-colors border dark:border-gray-600"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
