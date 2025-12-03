@@ -47,7 +47,7 @@ function CameraForm() {
   const streamUrlSec = ''
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-300 dark:border-gray-700 max-w-2xl mx-auto">
       <h2 className="dark:text-white text-2xl mb-6 font-semibold">Registrar Nueva Cámara</h2>
 
       {/* Nombre */}
@@ -102,7 +102,7 @@ function CameraForm() {
       </div>
 
       <div className="border-t border-gray-700 pt-4 mt-4">
-      <h3 className="text-gray-300 font-bold mb-3">Configuración de Video</h3>
+      <h3 className="dark:text-gray-300 font-bold mb-3">Configuración de Video</h3>
       
       {/* Checkbox Timestamp */}
       <div className="flex items-center mb-4">
@@ -113,7 +113,7 @@ function CameraForm() {
           checked={enableTimestamp}
           onChange={(e) => setEnableTimestamp(e.target.checked)}
         />
-        <label htmlFor="ts-check" className="ml-2 text-sm text-gray-300">
+        <label htmlFor="ts-check" className="ml-2 text-sm dark:text-gray-300">
           Superponer Fecha y Hora (Timestamp) en grabaciones
         </label>
       </div>
@@ -127,7 +127,7 @@ function CameraForm() {
           checked={enableMask}
           onChange={(e) => setEnableMask(e.target.checked)}
         />
-        <label htmlFor="mask-check" className="ml-2 text-sm text-gray-300">
+        <label htmlFor="mask-check" className="ml-2 text-sm dark:text-gray-300">
           Activar Máscara de Privacidad (Censura estática)
         </label>
         </div>
