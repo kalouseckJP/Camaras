@@ -30,7 +30,7 @@ const startRecording = async (cameraId, streamUrl) => {
       "drawtext=fontfile='arial.ttf':text='%{localtime\\:%Y-%m-%d %H\\\\\\:%M\\\\\\:%S}':fontcolor=white:fontsize=24:box=1:boxcolor=black@0.5:x=10:y=10",
       
       // 2. Censura (Descomenta esta línea) 👇
-      "drawbox=x=100:y=100:w=200:h=100:color=black:t=fill",
+      "drawbox=x=100:y=100:w=100:h=100:color=black:t=fill",
       
       // 3. Escalado y Formato
       "scale=1280:-2",

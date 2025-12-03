@@ -64,7 +64,7 @@ function DashboardPage() {
            </div>
            <h2 className="text-gray-600 dark:text-gray-400 text-sm font-bold uppercase">Total Grabaciones</h2>
            <p className="text-4xl font-extrabold dark:text-white mt-2">{stats.recordingCount}</p>
-           <Link to="/recordings" className="text-sm text-green-600 dark:text-green-400 hover:underline mt-2">Ver Galería &rarr;</Link>
+           <Link to="/grabaciones" className="text-sm text-green-600 dark:text-green-400 hover:underline mt-2">Ver Galería &rarr;</Link>
         </div>
 
         {/* --- TARJETA 3: CÁMARAS ACTIVAS --- */}

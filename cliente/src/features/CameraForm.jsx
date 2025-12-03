@@ -10,7 +10,7 @@ function CameraForm() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [enableTimestamp, setEnableTimestamp] = useState(true);
-  const [enableMask, setEnableMask] = useState(false);
+  const [enableMask, setEnableMask] = useState(true);
 
   // Función para guardar en la base de datos
   const handleSubmit = async (e) => {
@@ -109,7 +109,7 @@ function CameraForm() {
         <input 
           id="ts-check" 
           type="checkbox" 
-          className="w-4 h-4 text-indigo-600 bg-gray-700 border-gray-600 rounded"
+          className="w-4 h-4 text-indigo-600 bg-gray-700 border-gray-600 rounded cursor-pointer"
           checked={enableTimestamp}
           onChange={(e) => setEnableTimestamp(e.target.checked)}
         />
@@ -123,7 +123,7 @@ function CameraForm() {
         <input 
           id="mask-check" 
           type="checkbox" 
-          className="w-4 h-4 text-indigo-600 bg-gray-700 border-gray-600 rounded"
+          className="w-4 h-4 text-indigo-600 bg-gray-700 border-gray-600 rounded cursor-pointer"
           checked={enableMask}
           onChange={(e) => setEnableMask(e.target.checked)}
         />
@@ -142,7 +142,7 @@ function CameraForm() {
         <button
           type="submit"
           disabled={loading}
-          className={`bg-indigo-400 dark:bg-indigo-600 dark:text-white font-bold py-2 px-6 rounded hover:bg-indigo-500 dark:hover:bg-indigo-700 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`cursor-pointer bg-indigo-400 dark:bg-indigo-600 text-gray-800 dark:text-white font-bold py-2 px-6 rounded hover:bg-indigo-500 dark:hover:bg-indigo-700 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {loading ? 'Guardando...' : 'Guardar Cámara'}
         </button>

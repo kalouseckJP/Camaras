@@ -43,17 +43,17 @@ function TrimModal({ recording, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-lg shadow-2xl border border-gray-700 w-full max-w-lg overflow-hidden">
+      <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-lg overflow-hidden">
         
         {/* Encabezado */}
-        <div className="bg-gray-900 p-4 flex justify-between items-center border-b border-gray-700">
-          <h3 className="text-white font-bold">Recortar Grabación</h3>
+        <div className="bg-gray-200 dark:bg-gray-900 p-4 flex justify-between items-center border-b border-gray-700">
+          <h3 className="dark:text-white font-bold">Recortar Grabación</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-white">✕</button>
         </div>
 
         <div className="p-6">
-          <p className="text-gray-300 text-sm mb-4">
-            Archivo original: <span className="font-bold text-white">{recording.camera_name}</span>
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+            Archivo original: <span className="font-bold dark:text-white">{recording.camera_name}</span>
           </p>
 
           {/* Vista previa pequeña (Opcional, ayuda a ver el tiempo) */}
@@ -68,12 +68,12 @@ function TrimModal({ recording, onClose }) {
               
               {/* Input Inicio */}
               <div>
-                <label className="block text-gray-400 text-xs mb-1">Inicio (HH:MM:SS)</label>
+                <label className="block text-gray-600 dark:text-gray-400 text-xs mb-1">Inicio (HH:MM:SS)</label>
                 <input 
                   type="text" 
                   pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
                   placeholder="00:00:10"
-                  className="w-full bg-gray-700 text-white border border-gray-600 rounded p-2 text-center font-mono"
+                  className="w-full bg-gray-50 dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded p-2 text-center font-mono"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   required
@@ -82,11 +82,11 @@ function TrimModal({ recording, onClose }) {
 
               {/* Input Duración */}
               <div>
-                <label className="block text-gray-400 text-xs mb-1">Duración (Segundos)</label>
+                <label className="block text-gray-600 dark:text-gray-400 text-xs mb-1">Duración (Segundos)</label>
                 <input 
                   type="number" 
                   min="1" max="300"
-                  className="w-full bg-gray-700 text-white border border-gray-600 rounded p-2 text-center font-mono"
+                  className="w-full bg-gray-50 dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded p-2 text-center font-mono"
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
                   required
@@ -98,14 +98,14 @@ function TrimModal({ recording, onClose }) {
               <button 
                 type="button" 
                 onClick={onClose}
-                className="px-4 py-2 text-gray-300 hover:text-white"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 dark:hover:text-white hover:text-black cursor-pointer"
               >
                 Cancelar
               </button>
               <button 
                 type="submit" 
                 disabled={loading}
-                className={`px-4 py-2 bg-indigo-600 text-white rounded font-bold hover:bg-indigo-700 flex items-center gap-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`cursor-pointer px-4 py-2 bg-indigo-600 text-white rounded font-bold hover:bg-indigo-700 flex items-center gap-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {loading ? 'Procesando...' : (
                   <>

@@ -44,36 +44,36 @@ function Sidebar({ isOpen = true, onToggle }) {
               {!isOpen && <span className="mx-auto">●</span>}
             </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/administrar" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Administrar permisos</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/logs" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Logs</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/grabaciones-p" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Programar grabaciones</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/notificaciones" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Notificaciones</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/almacenamiento" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Almacenamiento</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/grabaciones" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Grabaciones</span>
