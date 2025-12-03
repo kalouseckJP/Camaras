@@ -32,7 +32,7 @@ function DashboardPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  if (loading) return <div className="text-white p-8">Calculando almacenamiento...</div>;
+  if (loading) return <div className="dark:text-white p-8">Calculando almacenamiento...</div>;
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
