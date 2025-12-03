@@ -33,14 +33,14 @@ const Camera = {
   
   // Editar cámara (Update)
   update: async (id, data) => {
-    const { name, ip_address, stream_url_main } = data;
+    const { name, ip_address, stream_url_main, stream_url_sub } = data;
     const query = `
       UPDATE "Cameras" 
-      SET name = $1, ip_address = $2, stream_url_main = $3
-      WHERE camera_id = $4
+      SET name = $1, ip_address = $2, stream_url_main = $3 , stream_url_sub = $4
+      WHERE camera_id = $5
       RETURNING *
     `;
-    const result = await db.query(query, [name, ip_address, stream_url_main, id]);
+    const result = await db.query(query, [name, ip_address, stream_url_main, stream_url_sub, id]);
     return result.rows[0];
   },
 
