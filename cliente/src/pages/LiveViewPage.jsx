@@ -13,6 +13,9 @@ function LiveViewPage() {
 
   const [recordingCams, setRecordingCams] = useState({}); 
 
+  // current stream URL per camera_id (main or sub)
+  const [currentStreams, setCurrentStreams] = useState({});
+
   const toggleRecording = async (cam) => {
     const isRecording = recordingCams[cam.camera_id];
     const token = localStorage.getItem('token');
@@ -133,16 +136,14 @@ function LiveViewPage() {
     }
   };
 
-
-  const toggleStream = (elementId) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      try {
-        
-      } catch (error) {
-        
-      }
-    }
+  const toggleStream = (_elementId, cam) => {
+    // Toggle between main and sub (uses React state so UI/player updates)
+    if (!cam) return;
+    setCurrentStreams(prev => {
+      const current = prev[cam.camera_id] ?? cam.stream_url_main ?? cam.stream_url_sub;
+      const newUrl = current === cam.stream_url_main ? (cam.stream_url_sub || cam.stream_url_main) : cam.stream_url_main;
+      return { ...prev, [cam.camera_id]: newUrl };
+    });
   };
 
   // --- RENDER ---
@@ -227,11 +228,11 @@ function LiveViewPage() {
                     </span>
                   </div>
                 
-                {/* La intencion es que se pueda cambiar el stream de la camara a uno secundario
+                  {/* La intencion es que se pueda cambiar el stream de la camara a uno secundario */}
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleStream(containerId);
+                      toggleStream(containerId, cam);
                     }}
                     className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 hover:bg-indigo-600 text-white p-1.5 rounded"
                     title="Pantalla Completa"
@@ -240,25 +241,25 @@ function LiveViewPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                     </svg>
                   </button>
-                  */}
-                  <div className="pointer-events-auto ...">
-                  {/* ... titulo ... */}
                   
-                  {/* BOTÓN GRABAR (Círculo rojo) */}
-                  {!isUsb && ( // Solo mostrar si NO es USB
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleRecording(cam);}}
-                      className={`ml-2 px-2 rounded text-xs font-bold ${
-                        recordingCams[cam.camera_id] 
-                          ? 'bg-red-600 text-white animate-pulse' // Parpadea si graba
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                      }`}
-                    >
-                      {recordingCams[cam.camera_id] ? 'REC ●' : 'GRABAR'}
-                    </button>
-                  )}
-                </div>
-
+                  <div className="pointer-events-auto ...">
+                    {/* ... titulo ... */}
+                    
+                    {/* BOTÓN GRABAR (Círculo rojo) */}
+                    {!isUsb && ( // Solo mostrar si NO es USB
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleRecording(cam);}}
+                        className={`ml-2 px-2 rounded text-xs font-bold ${
+                          recordingCams[cam.camera_id] 
+                            ? 'bg-red-600 text-white animate-pulse' // Parpadea si graba
+                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        }`}
+                      >
+                        {recordingCams[cam.camera_id] ? 'REC ●' : 'GRABAR'}
+                      </button>
+                    )}
+                  </div>
+                  
                   {/* Botón Fullscreen */}
                   <button 
                     onClick={(e) => {
@@ -280,18 +281,22 @@ function LiveViewPage() {
                   {isUsb ? (
                     <USBCameraView />
                   ) : isHls ? (
-                    <CameraView streamUrl={cam.stream_url_main} />
+                    <CameraView
+                      key={currentStreams[cam.camera_id] ?? cam.stream_url_main}
+                      streamUrl={currentStreams[cam.camera_id] ?? cam.stream_url_main}
+                    />
                   ) : (
                     /* MJPEG / Imagen Estática */
                     <img 
-                      src={cam.stream_url_main} 
-                      alt={cam.name}
-                      className="w-full h-full object-contain absolute inset-0"
-                      onError={(e) => {
-                        e.target.style.display = 'none'; // Ocultar si falla
-                      }}
-                    />
-                  )}
+                      src={currentStreams[cam.camera_id] ?? cam.stream_url_sub} 
+                       alt={cam.name}
+                       className="w-full h-full object-contain absolute inset-0"
+                       onError={(e) => {
+                         e.target.style.display = 'none'; // Ocultar si falla
+                       }}
+                       onLoad={(e) => e.target.style.display = 'block'}
+                     />
+                   )}
                   
                   {/* Placeholder si falla la imagen o video */}
                   <div className="absolute inset-0 flex items-center justify-center -z-10">

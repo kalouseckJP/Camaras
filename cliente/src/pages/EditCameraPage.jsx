@@ -9,7 +9,8 @@ function EditCameraPage() {
   const [formData, setFormData] = useState({
     name: '',
     ip_address: '',
-    stream_url_main: ''
+    stream_url_main: '',
+    stream_url_sub: ''
   });
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +27,8 @@ function EditCameraPage() {
         setFormData({
           name: response.data.name,
           ip_address: response.data.ip_address || '',
-          stream_url_main: response.data.stream_url_main
+          stream_url_main: response.data.stream_url_main,
+          stream_url_sub: response.data.stream_url_sub
         });
       } catch (error) {
         alert('Error al cargar la cámara');
@@ -46,7 +48,8 @@ function EditCameraPage() {
       await api.put(`/cameras/${id}`, {
         name: formData.name,
         ip: formData.ip_address,
-        streamUrl: formData.stream_url_main
+        streamUrlMain: formData.stream_url_main,
+        streamUrlSub: formData.stream_url_sub
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -54,7 +57,7 @@ function EditCameraPage() {
       alert('Cámara actualizada');
       navigate('/cameras'); // Volver a la lista
     } catch (error) {
-      alert('Error al actualizar');
+      alert('Error al actualizar',error);
     }
   };
 
@@ -93,6 +96,16 @@ function EditCameraPage() {
           value={formData.stream_url_main}
           onChange={(e) => setFormData({...formData, stream_url_main: e.target.value})}
           required
+        />
+      </div>
+
+      <div className="mb-6">
+        <label className="block dark:text-gray-300 mb-2">Sub-stream URL</label>
+        <input
+          type="text"
+          className="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded p-2 border border-gray-700"
+          value={formData.stream_url_sub}
+          onChange={(e) => setFormData({...formData, stream_url_sub: e.target.value})}
         />
       </div>
 

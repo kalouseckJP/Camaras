@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 function CameraForm() {
   const [cameraName, setCameraName] = useState('');
-  const [streamUrl, setStreamUrl] = useState('');
+  const [streamUrlMain, setStreamUrlMain] = useState('');
+  const [streamUrlSub, setStreamUrlSub] = useState('');
   const [ipAddress, setIpAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,7 +26,8 @@ function CameraForm() {
       await api.post('/cameras', {
         name: cameraName,
         ip: ipAddress,
-        streamUrl: streamUrl
+        streamUrlMain: streamUrlMain,
+        streamUrlSub: streamUrlSub
       }, {
         headers: { Authorization: `Bearer ${token}` } // Enviamos el token
       });
@@ -80,26 +82,25 @@ function CameraForm() {
           type="text"
           className="w-full bg-gray-100 dark:bg-gray-700 text-black dark:text-white border border-gray-600 rounded py-2 px-3 focus:outline-none focus:border-indigo-500"
           placeholder="Ej: http://192.168.1.50:8081/stream"
-          value={streamUrl}
-          onChange={(e) => setStreamUrl(e.target.value)}
+          value={streamUrlMain}
+          onChange={(e) => setStreamUrlMain(e.target.value)}
           required
         />
         <p className="text-xs text-gray-500 mt-1">Esta es la URL que usará el sistema para visualizar el video.</p>
       </div>
-      {/*
       
       <div className="mb-6">
-        <label className="block dark:text-gray-300 text-sm font-bold mb-2">URL del Stream Secundario</label>
+        <label className="block dark:text-gray-300 text-sm font-bold mb-2">URL Secundaria del Stream (MJPEG/HLS/RTSP)</label>
         <input
           type="text"
           className="w-full bg-gray-100 dark:bg-gray-700 text-black dark:text-white border border-gray-600 rounded py-2 px-3 focus:outline-none focus:border-indigo-500"
-          placeholder="Ej: http://192.168.1.50:8081/substream"
-          value={streamUrlSec}
-          required
+          placeholder="Ej: http://192.168.1.50:8081/stream"
+          value={streamUrlSub}
+          onChange={(e) => setStreamUrlSub(e.target.value)}
         />
-        <p className="text-xs text-gray-500 mt-1">Esta es la URL que usará el sistema para visualizar el video.</p>
+        <p className="text-xs text-gray-500 mt-1">Segunda URL.</p>
       </div>
-      */}
+
       <div className="border-t border-gray-700 pt-4 mt-4">
       <h3 className="text-gray-300 font-bold mb-3">Configuración de Video</h3>
       

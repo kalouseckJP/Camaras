@@ -100,6 +100,7 @@ function CamerasPage() {
                   <td className="px-5 py-5 border-b border-gray-700 dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-300">
                     <p>{cam.ip_address || 'N/A'}</p>
                     <p className="text-xs text-gray-600 dark:text-gray-500 truncate w-48">{cam.stream_url_main}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-500 truncate w-48">{cam.stream_url_sub}</p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-700 dark:bg-gray-800 text-sm">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
