@@ -13,7 +13,7 @@ function Header() {
 
         {/* Mostramos el nombre del usuario */}
         <span className="dark:text-white mr-4">
-          Hola, {user ? user.name : 'Usuario'}
+          Hola, {user ? user.username : 'Username'}
         </span>
         
         {/* Botón de Logout */}
