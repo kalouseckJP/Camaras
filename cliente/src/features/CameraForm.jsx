@@ -43,8 +43,6 @@ function CameraForm() {
       setLoading(false);
     }
   };
-  
-  const streamUrlSec = ''
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-200 dark:bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-300 dark:border-gray-700 max-w-2xl mx-auto">

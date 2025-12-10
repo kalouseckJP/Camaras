@@ -11,6 +11,7 @@ function RecordingsPage() {
   // Filtros
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedCamera, setSelectedCamera] = useState('');
+  const [showCameras, setShowCameras] = useState([])
   
   // Modal de Recorte
   const [trimmingVideo, setTrimmingVideo] = useState(null); // Guarda el video seleccionado para recortar
@@ -39,7 +40,7 @@ function RecordingsPage() {
       try {
         const token = localStorage.getItem('token');
         let url = '/recordings?';
-        if (selectedDate) url += `date=${selectedDate}&`;
+        if (selectedDate) url += `start_time=${selectedDate}&`;
         if (selectedCamera) url += `cameraId=${selectedCamera}`;
 
         const res = await api.get(url, { headers: { Authorization: `Bearer ${token}` } });

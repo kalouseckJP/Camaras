@@ -29,17 +29,41 @@ const stop = async (req, res) => {
 // Listar historial
 const list = async (req, res) => {
   try {
-    const result = await db.query(`
+    const { start_time, cameraId } = req.query;
+
+    let query = `
       SELECT r.*, c.name as camera_name 
       FROM "Recordings" r
       JOIN "Cameras" c ON r.camera_id = c.camera_id
-      ORDER BY start_time DESC
-    `);
+    `;
+    
+    const conditions = [];
+    const values = [];
+
+    if (start_time) {
+      values.push(start_time);
+      conditions.push(`CAST(r.start_time AS DATE) = $${values.length}`);
+    }
+
+    if (cameraId) {
+      values.push(cameraId);
+      conditions.push(`r.camera_id = $${values.length}`);
+    }
+
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
+    }
+
+    query += " ORDER BY r.start_time DESC";
+
+    const result = await db.query(query, values);
     res.json(result.rows);
+
   } catch (error) {
     res.status(500).json({ error: 'Error listando grabaciones' });
   }
 };
+
 
 const downloadVideo = async (req, res) => {
   try {
