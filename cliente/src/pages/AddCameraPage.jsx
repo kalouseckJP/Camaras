@@ -1,7 +1,5 @@
-import React from 'react';
 // Importamos el formulario que acabamos de crear
 import CameraForm from '../features/CameraForm'; 
-
 function AddCameraPage() {
   return (
     <div>
