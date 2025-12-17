@@ -69,12 +69,12 @@ function Sidebar({ isOpen = true, onToggle }) {
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/notificaciones" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Notificaciones</span>
                 {!isOpen && <span className="mx-auto">●</span>}
               </NavLink>
-            </li>
+            </li> */}
             {/* <li>
               <NavLink to="/almacenamiento" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Almacenamiento</span>
