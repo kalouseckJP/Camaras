@@ -8,6 +8,8 @@ const userRoutes = require('./routes/userRoutes'); // Importar rutas
 const statsController = require('./controllers/statsController'); // Importar
 const verifyToken = require('./middlewares/authMiddleware');
 const logController = require('./controllers/logController'); // Importar
+const systemController = require('./controllers/systemController');
+const { initCronJobs } = require('./services/cronService');
 
 
 const app = express();
@@ -42,9 +44,13 @@ app.delete('/api/recordings/:id', recordingController.deleteRecording);
 app.get('/api/stats', verifyToken, statsController.getSummary);
 app.get('/api/logs', verifyToken, logController.getLogs);
 app.post('/api/recordings/trim/:id', recordingController.trimVideo);
+app.get('/api/settings', verifyToken, systemController.getSettings);
+app.post('/api/settings', verifyToken, systemController.updateSettings); // Solo Admin debería poder
+app.get('/api/alerts', verifyToken, systemController.getAlerts);
 // Esto crea la URL base: http://localhost:3000/api/auth/login
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  initCronJobs();
 });

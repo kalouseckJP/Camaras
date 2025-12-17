@@ -57,6 +57,13 @@ function Sidebar({ isOpen = true, onToggle }) {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/system-status" className={getNavLinkClasses}>
+                <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Estado del Sistema</span>
+                {!isOpen && <span className="mx-auto">●</span>}
+              </NavLink>
+            </li>
+            
+            <li>
               <NavLink to="/grabaciones-p" className={getNavLinkClasses}>
                 <span className={`${isOpen ? 'ml-2 inline' : 'sr-only'}`}>Programar grabaciones</span>
                 {!isOpen && <span className="mx-auto">●</span>}

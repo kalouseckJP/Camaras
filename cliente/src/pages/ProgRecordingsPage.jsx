@@ -1,8 +1,12 @@
 import api from '../api/axios'
 import { useAuth } from '../contexts/AuthContext'
+import React from 'react'
 
 function ProgRecordingsPage() {
   const { isAdmin } = useAuth()
+  const [cameras, setCameras] = React.useState([])
+  const [selectedDate, setSelectedDate] = React.useState('')
+  const [selectedCamera, setSelectedCamera] = React.useState('')
 
   return (
     <div className="p-6 min-h-screen">

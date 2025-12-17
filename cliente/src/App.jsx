@@ -20,6 +20,7 @@ import LogsPage from './pages/LogsPage';
 import ProgRecordingsPage from './pages/ProgRecordingsPage';
 import MultiCameras from './features/CamerasForms';
 import EditCamerasPages from './pages/EditCamerasPages';
+import SystemStatusPage from './pages/SystemStatusPage';
 
 
 // Importar el guardia
@@ -64,6 +65,7 @@ function App() {
           <Route path='/grabaciones-p' element={<ProgRecordingsPage />} />
           <Route path='/multicams' element={<MultiCameras />} />
           <Route path='/edit-cameras' element={<EditCamerasPages />} />
+          <Route path='/system-status' element={<SystemStatusPage />} />
           {/* <Route path="/admin" element={<AdminPage />} /> */}
         
         </Route>
