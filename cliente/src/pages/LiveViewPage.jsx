@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import api from '../api/axios'
 import CameraView from '../features/CameraView'
 import USBCameraView from '../features/USBCameraView'
+import PTZButton from '../features/PTZButton'
 
 function LiveViewPage() {
   const [cameras, setCameras] = useState([])
@@ -412,6 +413,10 @@ function LiveViewPage() {
                     </span>
                   </div>
                 </div>
+                
+								<div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/30 dark:from-black/50 to-transparent p-2 z-10 flex justify-between items-start">
+                  <PTZButton/>
+								</div>
               </div>
             )
           })}
