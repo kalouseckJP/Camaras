@@ -49,7 +49,15 @@ function CamerasPage() {
     <div className="container mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold dark:text-white">Gestión de Cámaras</h1>
-        
+        <div className='flex gap-x-4'>
+
+        <Link 
+          to="/edit-cameras" 
+          className="bg-indigo-300 hover:bg-indigo-400 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-white font-bold py-2 px-4 rounded"
+        >
+          Editar Camaras
+        </Link>
+
         {/* Botón para ir a "Añadir Cámara" */}
         <Link 
           to="/agregar" 
@@ -57,6 +65,7 @@ function CamerasPage() {
         >
           + Nueva Cámara
         </Link>
+        </div>
       </div>
 
       {/* TABLA TAILWIND */}

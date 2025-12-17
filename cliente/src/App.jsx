@@ -19,6 +19,7 @@ import DashboardPage from './pages/DashboardPage';
 import LogsPage from './pages/LogsPage';
 import ProgRecordingsPage from './pages/ProgRecordingsPage';
 import MultiCameras from './features/CamerasForms';
+import EditCamerasPages from './pages/EditCamerasPages';
 
 
 // Importar el guardia
@@ -62,6 +63,7 @@ function App() {
           <Route path="/logs" element={<LogsPage />} />
           <Route path='/grabaciones-p' element={<ProgRecordingsPage />} />
           <Route path='/multicams' element={<MultiCameras />} />
+          <Route path='/edit-cameras' element={<EditCamerasPages />} />
           {/* <Route path="/admin" element={<AdminPage />} /> */}
         
         </Route>
